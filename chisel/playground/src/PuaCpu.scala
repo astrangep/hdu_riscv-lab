@@ -25,10 +25,10 @@ class PuaCpu extends Module {
     val y = Input(UInt(8.W))
     val s = Output(Bool())
   })
-  if (port.x>=port.y){
+  when (port.x>=port.y){
       port.s:=1.B
   }
-  else{
+  .otherwise{
     port.s:=0.B
   }
 }
