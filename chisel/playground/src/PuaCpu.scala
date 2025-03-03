@@ -23,8 +23,12 @@ class PuaCpu extends Module {
   val port = IO(new Bundle {
     val x = Input(UInt(8.W))
     val y = Input(UInt(8.W))
-    val s = Output(UInt(8.W))
+    val s = Output(Bool())
   })
-
-  port.s := port.x + port.y
+  if (port.x>=port.y){
+      port.s:=1.B
+  }
+  else{
+    port.s:=0.B
+  }
 }
