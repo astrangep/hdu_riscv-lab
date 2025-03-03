@@ -21,9 +21,9 @@ import cpu.defines._
 
 class PuaCpu extends Module {
   val port = IO(new Bundle {
-    val x = UInt(8.W)
-    val y = UInt(8.W)
-    val s = UInt(8.W)
+    val x = Input(UInt(8.W))
+    val y = Input(UInt(8.W))
+    val s = Output(UInt(8.W))
   })
 
   port.s := port.x + port.y
