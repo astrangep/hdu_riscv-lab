@@ -10,7 +10,7 @@
 
 ```
 
-# 🚀 RISCV-LAB
+# 🚀 [RISCV-LAB](https://code.educoder.net/ppg69fuwb/riscv-lab)
 
 从零开始的 RV64IMAZicsr_Zifencei 流水线设计实验
 
@@ -78,6 +78,9 @@ verilator –-version
 
 ```bash
 sudo apt-get install gtkwave
+
+# 使用方法为
+gtkwave <波形文件的路径>
 ```
 
 ### 🍟 安装 Java
@@ -100,6 +103,7 @@ mill --version # 若安装成功将输出对应版本号
 - 安装 VS Code
 - 安装 Scala（Metals）插件
 - 安装 Todo Tree 插件
+- 安装 Git Graph 插件
 
 ### 🥓 安装实验框架
 
@@ -107,7 +111,7 @@ mill --version # 若安装成功将输出对应版本号
 git clone https://bdgit.educoder.net/ppg69fuwb/riscv-lab.git
 cd riscv-lab
 
-git config --global user.name "231220000-Zhang San" # 设置学号和姓名
+git config --global user.name "244050090-Zhang San" # 设置学号和姓名
 git config --global user.email "zhangsan@foo.com"   # 设置邮箱
 git config --global core.editor vim                 # 设置文本编辑器
 git config --global color.ui true
@@ -117,7 +121,7 @@ source ~/.bashrc
 echo $RVDIFF_HOME # 查看是否成功输出 difftest 文件夹的路径
 
 cd difftest
-make verilog # 若在 chisel/build 目录下成功生成 verilog 文件，说明环境安装成功
+make verilog # 若在 chisel/build 目录下成功生成 verilog 文件（或得到信号名未被完全初始化的报错提示），说明环境安装成功
 ```
 
 ## 📢 注意事项
@@ -125,12 +129,12 @@ make verilog # 若在 chisel/build 目录下成功生成 verilog 文件，说明
 - 编程位置位于 chisel 中
 - 测试位置位于 difftest 中
 - 进入 difftest 目录后
-  - 使用 make verilog 生成 verilog 代码
+  - 使用 make verilog 生成 verilog 代码（首次实验需要按实验要求补充代码，否则会报错）
   - 使用 make lab1 进行 实验 1 的测试
   - 使用 make trace_lab1 进行 实验 1 的 CPU 测试记录生成
   - 实验 2 为 lab2，以此类推
   - difftest 目录下的 trace.txt 文件为测试结果，用于提交头歌平台，作为评分依据
-- 在实验时务必确认 git 下有产生实验记录，这是重要的采分点之一，可通过 `git log tracer-rvlab` 查看
+- 在实验时务必确认 git 下有产生实验记录，这是重要的采分点之一，可通过 `git log tracer-rvlab` 查看（如果没有产生实验记录，请检查RVDIFF_HOME是否设置正确）
 
 ## 📦 资源
 

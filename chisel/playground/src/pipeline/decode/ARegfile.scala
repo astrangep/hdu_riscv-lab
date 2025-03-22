@@ -28,7 +28,7 @@ class ARegFile extends Module {
     val write = Flipped(new RegWrite())
   })
 
-  // 定义32个32位寄存器
+  // 定义32个XLEN位寄存器
   val regs = RegInit(VecInit(Seq.fill(AREG_NUM)(0.U(XLEN.W))))
 
   // 写寄存器堆
