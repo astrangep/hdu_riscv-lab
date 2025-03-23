@@ -10,6 +10,7 @@ class Decoder extends Module with HasInstrType {
     // inputs
     val in = Input(new Bundle {
       val inst = UInt(XLEN.W)
+      val valid= Bool()
     })
     // outputs
     val out = Output(new Bundle {
@@ -24,12 +25,10 @@ class Decoder extends Module with HasInstrType {
     ListLookup(inst, Instructions.DecodeDefault, Instructions.DecodeTable)
 
   val (rs, rt, rd) = (inst(19, 15), inst(24, 20), inst(11, 7))
-
-  // TODO: 完成Decoder模块的逻辑
-  // io.out.info.valid      :=
-  // io.out.info.src1_raddr :=
-  // io.out.info.src2_raddr :=
-  // io.out.info.op         :=
-  // io.out.info.reg_wen    :=
-  // io.out.info.reg_waddr  :=
+  io.out.info.valid      := io.in.valid
+  io.out.info.src1_raddr := rs
+  io.out.info.src2_raddr := rt
+  io.out.info.op         := fuOpType
+  io.out.info.reg_wen    := isRegWen(instrType)
+  io.out.info.reg_waddr  := rd
 }
