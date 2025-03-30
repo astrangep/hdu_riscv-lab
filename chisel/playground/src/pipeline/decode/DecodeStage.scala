@@ -12,7 +12,7 @@ class IfIdData extends Bundle {
   val pc    = UInt(XLEN.W)
 }
 
-class FetchUnitDecodeUnit extends Bundle {
+class  FetchUnitDecodeUnit extends Bundle {
   val data = Output(new IfIdData())
 }
 
