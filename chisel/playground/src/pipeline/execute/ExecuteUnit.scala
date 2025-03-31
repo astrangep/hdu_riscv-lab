@@ -22,8 +22,8 @@ class ExecuteUnit extends Module {
   io.dataSram <> fu.dataSram
 
   // TODO: 完成ExecuteUnit模块的逻辑
-  // io.memoryStage.data.pc       := 
-  // io.memoryStage.data.info     := 
-  // io.memoryStage.data.src_info := 
-  // io.memoryStage.data.rd_info  := 
+  io.memoryStage.data.pc       := fu.data.pc
+  io.memoryStage.data.info     := fu.data.info
+  io.memoryStage.data.src_info := fu.data.src_info
+  io.memoryStage.data.rd_info  := fu.data.rd_info
 }

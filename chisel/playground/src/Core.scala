@@ -29,6 +29,9 @@ class Core extends Module {
   // 取指单元
   fetchUnit.instSram <> io.instSram
   fetchUnit.decodeStage <> decodeStage.fetchUnit
+  decodeStage.decodeUnit <> decodeUnit.decodeStage
+  decodeUnit.regfile <> regfile.read
+  
 
   // TODO: 完成Core模块的逻辑
 }
