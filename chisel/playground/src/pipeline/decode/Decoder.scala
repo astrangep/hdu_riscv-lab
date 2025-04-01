@@ -14,10 +14,6 @@ class Decoder extends Module with HasInstrType {
     // outputs
     val out = Output(new Bundle {
       val info = new Info()
-      val imm = Output(UInt(XLEN.W))
-      val src1_ren = Output(Bool())
-      val src2_ren = Output(Bool())
-      val is_lui = Output(Bool())
     })
   })
 
@@ -40,8 +36,8 @@ class Decoder extends Module with HasInstrType {
   io.out.info.op := fuOpType
   io.out.info.reg_wen := isRegWen(instrType)
   io.out.info.reg_waddr := rd
-  io.out.is_lui := inst(6, 0) === "b0110111".U
-  io.out.imm := MuxLookup(instrType, 0.U)(Seq(InstrI -> imm_i, InstrU -> imm_u))
-  io.out.src1_ren := instrType === InstrR | instrType === InstrI
-  io.out.src2_ren := instrType === InstrR
+  io.out.info.is_lui := inst(6, 0) === "b0110111".U
+  io.out.info.imm := MuxLookup(instrType, 0.U)(Seq(InstrI -> imm_i, InstrU -> imm_u))
+  io.out.info.src1_ren := instrType === InstrR | instrType === InstrI
+  io.out.info.src2_ren := instrType === InstrR
 }
