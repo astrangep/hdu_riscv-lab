@@ -48,7 +48,7 @@ class Alu extends Module {
       ALUOpType.slt  -> slt_res,
       ALUOpType.sltu -> sltu_res,
       ALUOpType.xor  -> xor_res,
-      ALUOpType.srl  -> sll_res,
+      ALUOpType.srl  -> srl_res,
       ALUOpType.sra  -> sra_res,
       ALUOpType.or   -> or_res,
       ALUOpType.and  -> and_res,
