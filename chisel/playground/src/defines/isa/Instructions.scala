@@ -28,5 +28,18 @@ object FuOpType {
 // ALU
 object ALUOpType {
   def add  = "b00000".U
-  // TODO: 定义更多的ALU操作类型
+  def sub  = "b01000".U
+  def sll  = "b00001".U
+  def slt  = "b00010".U
+  def sltu = "b00011".U
+  def xor  = "b00100".U
+  def srl  = "b00101".U
+  def sra  = "b01101".U
+  def or   = "b00110".U
+  def and  = "b00111".U
+  def addw = "b10000".U
+  def subw = "b11000".U
+  def sllw = "b10001".U
+  def srlw = "b10101".U
+  def sraw = "b11101".U
 }

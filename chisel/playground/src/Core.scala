@@ -30,5 +30,19 @@ class Core extends Module {
   fetchUnit.instSram <> io.instSram
   fetchUnit.decodeStage <> decodeStage.fetchUnit
 
-  // TODO: 完成Core模块的逻辑
+  decodeStage.decodeUnit <> decodeUnit.decodeStage
+  decodeUnit.regfile <> regfile.read
+  decodeUnit.executeStage <> executeStage.decodeUnit
+
+  executeStage.executeUnit <> executeUnit.executeStage
+  executeUnit.memoryStage <> memoryStage.executeUnit
+
+  memoryStage.memoryUnit <> memoryUnit.memoryStage
+  memoryUnit.writeBackStage <> writeBackStage.memoryUnit
+
+  writeBackStage.writeBackUnit <> writeBackUnit.writeBackStage
+  writeBackUnit.regfile <> regfile.write
+  
+  executeUnit.dataSram <> io.dataSram
+  writeBackUnit.debug <> io.debug
 }
