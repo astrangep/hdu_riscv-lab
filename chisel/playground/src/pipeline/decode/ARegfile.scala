@@ -29,9 +29,7 @@ class ARegFile extends Module {
   })
 
   // 定义32个XLEN位寄存器
-    val regs = RegInit(VecInit(Seq.tabulate(AREG_NUM)(i => 
-    if (i == 0) 0.U(XLEN.W) else i.U(XLEN.W)
-  )))
+    val regs = RegInit(VecInit(Seq.fill(AREG_NUM)(0.U(XLEN.W))))
   // 写寄存器堆
   when(io.write.wen && io.write.waddr =/= 0.U){
     regs(io.write.waddr) := io.write.wdata
