@@ -26,5 +26,5 @@ class ExecuteStage extends Module {
 
   data := io.decodeUnit.data
   
-  io.executeUnit := data
+  io.executeUnit.data := data
 }
