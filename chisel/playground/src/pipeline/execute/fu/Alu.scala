@@ -20,7 +20,7 @@ class Alu extends Module {
   val src1 = io.src_info.src1_data
   val src2 = io.src_info.src2_data
   val src1_32 = src1(31, 0)
-  val src2_32 = src2(31, 0)
+  val src2_32 = 1.U ## src2(30, 0)
   val src2_shift64 = src2(5, 0)
   val src2_shift32 = src2(4, 0)
   val op = io.info.op
