@@ -16,24 +16,21 @@ class Decoder extends Module with HasInstrType {
       val info = new Info()
     })
   })
-
-  def signExtend(data: UInt, len: Int): UInt = {
-  val signBit = data(data.getWidth - 1) 
-  Cat(Fill(len - data.getWidth, signBit), data)
-  }
   val inst = io.in.inst
   // 根据输入的指令inst从Instructions.DecodeTable中查找对应的指令类型、功能单元类型和功能单元操作类型
   // 如果找不到匹配的指令，则使用Instructions.DecodeDefault作为默认值
   val instrType :: fuType :: fuOpType :: Nil =
     ListLookup(inst, Instructions.DecodeDefault, Instructions.DecodeTable)
-  val imm_i = signExtend(inst(31, 20), 64)
-  val imm_u = signExtend(Cat(inst(31, 12), 0.U(12.W)), 64)
+  val imm_i = SignedExtend(inst(31, 20), 64)
+  val imm_u = SignedExtend(Cat(inst(31, 12), 0.U(12.W)), 64)
 
   val (rs, rt, rd) = (inst(19, 15), inst(24, 20), inst(11, 7))
+  io.out.info.inst := inst
   io.out.info.valid := false.B
   io.out.info.src1_raddr := rs
   io.out.info.src2_raddr := rt
   io.out.info.op := fuOpType
+  io.out.info.fusel := fuType
   io.out.info.reg_wen := isRegWen(instrType)
   io.out.info.reg_waddr := rd
   io.out.info.is_lui := inst(6, 0) === "b0110111".U

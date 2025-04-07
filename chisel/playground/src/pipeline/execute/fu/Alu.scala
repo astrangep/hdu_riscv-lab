@@ -11,12 +11,7 @@ class Alu extends Module {
     val src_info = Input(new SrcInfo())
     val result   = Output(UInt(XLEN.W))
   })
-
-  def signExtend(data: UInt, len: Int): UInt = {
-  val signBit = data(data.getWidth - 1) 
-  Cat(Fill(len - data.getWidth, signBit), data)
-  }
-
+  
   val src1 = io.src_info.src1_data
   val src2 = io.src_info.src2_data
   val src1_32 = src1(31, 0)
@@ -35,11 +30,11 @@ class Alu extends Module {
   val sra_res  = (src1.asSInt >> src2_shift64).asUInt
   val or_res   = src1 | src2
   val and_res  = src1 & src2
-  val addw_res = signExtend(src1_32 + src2_32, 64)
-  val subw_res = signExtend(src1_32 - src2_32, 64)
-  val sllw_res = signExtend((src1_32 << src2_32(4, 0))(31, 0), 64)
-  val srlw_res = signExtend((src1_32 >> src2_32(4, 0))(31, 0), 64)
-  val sraw_res = signExtend((src1_32.asSInt >> src2_32(4, 0))(31, 0), 64)
+  val addw_res = SignedExtend(src1_32 + src2_32, 64)
+  val subw_res = SignedExtend(src1_32 - src2_32, 64)
+  val sllw_res = SignedExtend((src1_32 << src2_32(4, 0))(31, 0), 64)
+  val srlw_res = SignedExtend((src1_32 >> src2_32(4, 0))(31, 0), 64)
+  val sraw_res = SignedExtend((src1_32.asSInt >> src2_32(4, 0))(31, 0), 64)
   io.result := MuxLookup(op, 0.U)(
     Seq(
       ALUOpType.add  -> add_res,
