@@ -6,7 +6,6 @@ import cpu.defines._
 import cpu.defines.Const._
 class Mdu extends Module {
    val io = IO(new Bundle {
-     val pc       = Input(UInt(XLEN.W))
      val info     = Input(new Info())
      val src_info = Input(new SrcInfo())
      val result   = Output(UInt(XLEN.W))
