@@ -49,10 +49,10 @@ class Mdu extends Module {
     MDUOpType.remu   -> rem_unsigned,
     
     // W后缀指令（RV64）
-    MDUOpType.mulw   -> SignedExtend(mul_signed(31, 0),XLEN)
-    MDUOpType.divw   -> SignedExtend(div_signed(31, 0),XLEN)
-    MDUOpType.divuw  -> ZeroExtend(div_unsigned(31, 0),XLEN)
-    MDUOpType.remw   -> SignedExtend(rem_signed(31, 0).XLEN)
+    MDUOpType.mulw   -> SignedExtend(mul_signed(31, 0),XLEN),
+    MDUOpType.divw   -> SignedExtend(div_signed(31, 0),XLEN),
+    MDUOpType.divuw  -> ZeroExtend(div_unsigned(31, 0),XLEN),
+    MDUOpType.remw   -> SignedExtend(rem_signed(31, 0),XLEN),
     MDUOpType.remuw  -> ZeroExtend(rem_unsigned(31, 0),XLEN)
   ))
 }
