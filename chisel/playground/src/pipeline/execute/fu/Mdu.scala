@@ -19,12 +19,12 @@ class Mdu extends Module {
   val mul_signed_u = (rs1.asSInt * rs2.asUInt).asUInt
   val mul_unsigned = rs1 * rs2
   val (div_signed, rem_signed) = {
-    val q = Mux(rs2 === 0.U, (-1).S, rs1.asSInt / rs2.asSInt)
+    val q = Mux(rs2 === 0.U, (-1).S(XLEN.W), rs1.asSInt / rs2.asSInt)
     val r = rs1.asSInt - q * rs2.asSInt
     (q.asUInt, r.asUInt)
   }
   val (div_unsigned, rem_unsigned) = {
-    val q = Mux(rs2 === 0.U, ~0.U, rs1 / rs2)
+    val q = Mux(rs2 === 0.U, ~0.U(XLEN.W), rs1 / rs2)
     (q, rs1 - q * rs2)
   }
   io.result := MuxLookup(io.info.op, 0.U)(Seq(
