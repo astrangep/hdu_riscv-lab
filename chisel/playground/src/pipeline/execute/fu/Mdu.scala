@@ -14,6 +14,8 @@ class Mdu extends Module {
 
   val rs1 = io.src_info.src1_data
   val rs2 = io.src_info.src2_data
+  val rs1_32 = rs1(31,0)
+  val rs2_32 = rs2(31,0)
   val is_w =isWordOp(io.info.op) 
   val mul_signed   = (rs1.asSInt * rs2.asSInt).asUInt
   val mul_signed_u = (rs1.asSInt * rs2.asUInt).asUInt
@@ -27,6 +29,16 @@ class Mdu extends Module {
     val q = Mux(rs2 === 0.U, ~0.U(XLEN.W), rs1 / rs2)
     (q, rs1 - q * rs2)
   }
+  val (divw_signed, remw_signed) ={
+    val q = Mux(rs2_32 === 0.U, (-1).S, rs1_32.asSInt / rs2_32.asSInt)
+    val r = Mux(rs2_32 === 0.U, rs1_32, rs1_32.asSInt - q * rs2_32.asSInt) 
+    (q.asUInt, r.asUInt)
+  }
+  val (divw_unsigned, remw_unsigned) = {
+    val q = Mux(rs2_32 === 0.U, ~0.U(32.W), rs1_32 / rs2_32)
+    val r = Mux(rs2_32 === 0.U, rs1_32, rs1_32 - q * rs2_32 )
+    (q, r)
+  }
   io.result := MuxLookup(io.info.op, 0.U)(Seq(
     MDUOpType.mul    -> mul_signed(XLEN-1, 0),
     MDUOpType.mulh   -> mul_signed(2*XLEN-1, XLEN),
@@ -36,11 +48,11 @@ class Mdu extends Module {
     MDUOpType.divu   -> div_unsigned,
     MDUOpType.rem    -> rem_signed,
     MDUOpType.remu   -> rem_unsigned,
-    MDUOpType.mulw   -> SignedExtend(mul_signed(31, 0),XLEN),
-    MDUOpType.divw   -> SignedExtend(div_signed(31, 0),XLEN),
-    MDUOpType.divuw  -> SignedExtend(div_unsigned(31, 0),XLEN),
-    MDUOpType.remw   -> SignedExtend(rem_signed(31, 0),XLEN),
-    MDUOpType.remuw  -> SignedExtend(rem_unsigned(31, 0),XLEN)
+    MDUOpType.mulw   -> SignedExtend(mul_signed(31,0),XLEN),
+    MDUOpType.divw   -> SignedExtend(divw_signed(31,0),XLEN),
+    MDUOpType.divuw  -> SignedExtend(divw_unsigned,XLEN),
+    MDUOpType.remw   -> SignedExtend(remw_signed(31,0),XLEN),
+    MDUOpType.remuw  -> SignedExtend(remw_unsigned,XLEN)
   )
   )
 }
