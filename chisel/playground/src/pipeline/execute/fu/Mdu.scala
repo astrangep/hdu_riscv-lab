@@ -36,7 +36,7 @@ class Mdu extends Module {
   }
   val (divw_unsigned, remw_unsigned) = {
     val q = Mux(rs2_32 === 0.U, ~0.U(32.W), rs1_32 / rs2_32)
-    val r = Mux(rs2_32 === 0.U, rs1_32, rs1_32 - q * rs2_32 )
+    val r = Mux(rs2_32 === 0.U, rs1_32.asSInt, rs1_32 - q * rs2_32)
     (q, r)
   }
   io.result := MuxLookup(io.info.op, 0.U)(Seq(
