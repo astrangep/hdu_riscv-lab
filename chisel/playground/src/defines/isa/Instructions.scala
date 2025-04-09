@@ -16,9 +16,10 @@ trait HasInstrType {
 }
 
 object FuType {
-  def num     = 1
+  def num     = 3
   def alu     = 0.U // arithmetic logic unit
   def mdu     = 1.U
+  def lsu     = 2.U
   def apply() = UInt(log2Up(num).W)
 }
 
@@ -63,4 +64,20 @@ object MDUOpType{
   def isDiv(op: UInt) = op(2)
   def isDivSign(op: UInt) = isDiv(op) && !op(0)
   def isWordOp(op: UInt) = op(3)
+}
+object LSUOpType{
+  def lb  = "b0000".U
+  def lh  = "b0001".U
+  def lw  = "b0010".U
+  def ld  = "b0011".U
+  def lbu = "b0100".U
+  def lhu = "b0101".U
+  def lwu = "b0110".U
+  
+  def sb  = "b1000".U
+  def sh  = "b1001".U
+  def sw  = "b1010".U
+  def sd  = "b1011".U
+  def isStore(func: UInt) : Bool = func(3)
+  def isLoad(func : UInt) : Bool = !isStore(func)
 }
