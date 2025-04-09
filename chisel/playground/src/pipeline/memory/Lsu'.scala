@@ -20,7 +20,7 @@ class LsuMem extends Module {
    val rdata_shifted = Wire(UInt(XLEN.W))
    rdata_shifted := (r_data >> (addr_low << 3))
  
-   val load_result = MuxLookup(op, 0.U)(Seq(
+   io.result := MuxLookup(op, 0.U)(Seq(
      LSUOpType.lb  -> SignedExtend(rdata_shifted(7, 0), XLEN),
      LSUOpType.lh  -> SignedExtend(rdata_shifted(15, 0), XLEN),
      LSUOpType.lw  -> SignedExtend(rdata_shifted(31, 0), XLEN),
@@ -29,7 +29,5 @@ class LsuMem extends Module {
      LSUOpType.lhu -> ZeroExtend(rdata_shifted(15, 0), XLEN),
      LSUOpType.lwu -> ZeroExtend(rdata_shifted(31, 0), XLEN)
    ))
- 
-   io.result := load_result
- }
+}
 
