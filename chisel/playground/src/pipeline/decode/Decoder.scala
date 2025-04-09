@@ -19,7 +19,6 @@ class Decoder extends Module with HasInstrType {
   val inst = io.in.inst
   // 根据输入的指令inst从Instructions.DecodeTable中查找对应的指令类型、功能单元类型和功能单元操作类型
   // 如果找不到匹配的指令，则使用Instructions.DecodeDefault作为默认值
-  // instrType、fuType和fuOpType分别被赋值为Instructions.DecodeTable中的对应值
   val instrType :: fuType :: fuOpType :: Nil =
     ListLookup(inst, Instructions.DecodeDefault, Instructions.DecodeTable)
   val imm_i = SignedExtend(inst(31, 20), 64)
