@@ -8,13 +8,15 @@ import cpu.CpuConfig
 class LsuMem extends Module {
    val io = IO(new Bundle {
      val info     = Input(new Info())
-     val dataSram = new DataSram()
+     val src_info = Input(new SrcInfo())
+     val rdata    = Input(UInt(XLEN.W))
      val result   = Output(UInt(XLEN.W))
    })
 
    val op = io.info.op
-   val addr_low = io.dataSram.addr(2,0)
-   val r_data = io.dataSram.rdata
+   val addr = io.src_info.src1_data + io.info.imm
+   val addr_low = addr(2,0)
+   val r_data = io.rdata
    val rdata_shifted = Wire(UInt(XLEN.W))
    rdata_shifted := (r_data >> (addr_low << 3))
  

@@ -11,11 +11,11 @@ class MemoryUnit extends Module {
   val io = IO(new Bundle {
     val memoryStage    = Input(new ExecuteUnitMemoryUnit())
     val writeBackStage = Output(new MemoryUnitWriteBackUnit())
-    val dataSram = new DataSram()
+    val rdata = Input(UInt(XLEN.W))
   })
   val lsu_mem = Module(new LsuMem()).io
   lsu_mem.info     := io.memoryStage.data.info
-  lsu_mem.dataSram <> io.dataSram
+  lsu_mem.rdata := io.rdata
   io.writeBackStage.data.pc                        := io.memoryStage.data.pc
   io.writeBackStage.data.info                      := lsu_mem.info
   io.writeBackStage.data.rd_info.wdata             := Mux(lsu_mem.info.fusel === FuType.lsu, lsu_mem.result, io.writeBackStage.data.rd_info.wdata)
