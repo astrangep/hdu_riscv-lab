@@ -36,13 +36,14 @@ class Core extends Module {
 
   executeStage.executeUnit <> executeUnit.executeStage
   executeUnit.memoryStage <> memoryStage.executeUnit
+  executeUnit.dataSram <> io.dataSram
 
   memoryStage.memoryUnit <> memoryUnit.memoryStage
+  io.dataSram.rdata <> memoryUnit.rdata
   memoryUnit.writeBackStage <> writeBackStage.memoryUnit
 
   writeBackStage.writeBackUnit <> writeBackUnit.writeBackStage
   writeBackUnit.regfile <> regfile.write
   
-  executeUnit.dataSram <> io.dataSram
   writeBackUnit.debug <> io.debug
 }

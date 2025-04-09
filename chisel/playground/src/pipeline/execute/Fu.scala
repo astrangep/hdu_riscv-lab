@@ -20,16 +20,16 @@ class Fu extends Module {
 
   val alu = Module(new Alu()).io
   val mdu = Module(new Mdu()).io
-  io.dataSram.en    := false.B
-  io.dataSram.addr  := DontCare
-  io.dataSram.wdata := DontCare
-  io.dataSram.wen   := 0.U
+  val lsu = Module(new Lsu()).io
 
+  lsu.dataSram <> io.dataSram
   alu.info     := io.data.info
   alu.src_info := io.data.src_info
 
   mdu.info     := io.data.info
   mdu.src_info := io.data.src_info
 
-  io.data.rd_info.wdata := Mux(io.data.info.fusel === FuType.alu, alu.result, mdu.result)
+  lsu.info     := io.data.info
+  lsu.src_info := io.data.src_info
+  io.data.rd_info.wdata := MuxLookup(io.data.info.fusel,0.U)(Seq(FuType.alu -> alu.result, FuType.mdu -> mdu.result, FuType.lsu -> lsu.result))
 }
