@@ -14,6 +14,8 @@ class DecodeUnit extends Module {
     val executeStage = Output(new DecodeUnitExecuteUnit())
   })
 
+  // 译码阶段完成指令的译码操作以及源操作数的准备
+
   val decoder = Module(new Decoder()).io
   decoder.in.inst := io.decodeStage.data.inst
 

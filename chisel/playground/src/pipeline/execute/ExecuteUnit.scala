@@ -14,6 +14,8 @@ class ExecuteUnit extends Module {
     val dataSram     = new DataSram()
   })
 
+  // 执行阶段完成指令的执行操作
+
   val fu = Module(new Fu()).io
   fu.data.pc       := io.executeStage.data.pc
   fu.data.info     := io.executeStage.data.info

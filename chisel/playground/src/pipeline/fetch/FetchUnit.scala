@@ -25,6 +25,8 @@ class FetchUnit extends Module {
     is(receive) {}
   }
 
+  // 取指阶段完成指令的取指操作
+
   val pc = RegEnable(io.instSram.addr, (PC_INIT - 4.U), state =/= boot)
 
   io.instSram.addr := pc + 4.U
