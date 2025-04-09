@@ -20,7 +20,6 @@ class Fu extends Module {
 
   val alu = Module(new Alu()).io
   val mdu = Module(new Mdu()).io
-  val lsu = Module(new Lsu()).io
   io.dataSram.en    := false.B
   io.dataSram.addr  := DontCare
   io.dataSram.wdata := DontCare
