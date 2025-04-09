@@ -12,5 +12,10 @@ class Lsu extends Module {
     val result   = Output(UInt(XLEN.W))
     val dataSram = new DataSram()
   })
+  io.result := 0.U 
+  io.dataSram.en    := false.B
+  io.dataSram.addr  := DontCare 
+  io.dataSram.wdata := DontCare
+  io.dataSram.wen   := 0.U
 }
 
