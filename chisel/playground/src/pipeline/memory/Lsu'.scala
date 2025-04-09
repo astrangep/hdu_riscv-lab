@@ -30,6 +30,6 @@ class LsuMem extends Module {
      LSUOpType.lwu -> ZeroExtend(rdata_shifted(31, 0), XLEN)
    ))
  
-   io.result := Mux(io.info.valid && (io.info.fusel === FuType.lsu) && LSUOpType.isLoad(op), load_result, 0.U)
+   io.result := load_result
  }
 
