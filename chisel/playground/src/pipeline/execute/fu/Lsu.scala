@@ -32,10 +32,10 @@ class Lsu extends Module {
   io.dataSram.wen := Mux(io.info.valid && (io.info.fusel === FuType.lsu) && LSUOpType.isStore(op), mem_wen_tmp, 0.U)
   io.dataSram.addr := mem_addr(SRAM_ADDR_WID-1,0)
   io.dataSram.wdata := MuxLookup(op(1,0),0.U)(Seq(
-    "b00".U -> Fill(8, src2_data(7, 0)),    // sb
-    "b01".U -> Fill(4, src2_data(15, 0)),   // sh
-    "b10".U -> Fill(2, src2_data(31, 0)),   // sw
-    "b11".U -> src2_data                    // sd
+    "b00".U -> Fill(8, src2_data(7, 0)),    
+    "b01".U -> Fill(4, src2_data(15, 0)),   
+    "b10".U -> Fill(2, src2_data(31, 0)),   
+    "b11".U -> src2_data                    
   ))
   io.result := 0.U
 }
