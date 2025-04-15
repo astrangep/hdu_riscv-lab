@@ -27,6 +27,8 @@ class Core extends Module {
   val writeBackUnit  = Module(new WriteBackUnit()).io
 
   // 取指单元
+  fetchUnit.branch := executeUnit.branch
+  fetchUnit.target := executeUnit.target
   fetchUnit.instSram <> io.instSram
   fetchUnit.decodeStage <> decodeStage.fetchUnit
 

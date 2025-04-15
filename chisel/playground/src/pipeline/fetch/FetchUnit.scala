@@ -10,6 +10,8 @@ class FetchUnit extends Module {
   val io = IO(new Bundle {
     val decodeStage = new FetchUnitDecodeUnit()
     val instSram    = new InstSram()
+    val branch      = Input(Bool())
+    val target      = Input(UInt(XLEN.W))
   })
 
   val boot :: send :: receive :: Nil = Enum(3)
@@ -29,7 +31,7 @@ class FetchUnit extends Module {
 
   val pc = RegEnable(io.instSram.addr, (PC_INIT - 4.U), state =/= boot)
 
-  io.instSram.addr := pc + 4.U
+  io.instSram.addr := Mux(io.branch, io.target, pc+4.U)
 
   io.decodeStage.data.valid := state === receive
   io.decodeStage.data.pc    := pc
