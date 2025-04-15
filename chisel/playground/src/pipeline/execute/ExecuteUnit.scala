@@ -12,6 +12,8 @@ class ExecuteUnit extends Module {
     val executeStage = Input(new DecodeUnitExecuteUnit())
     val memoryStage  = Output(new ExecuteUnitMemoryUnit())
     val dataSram     = new DataSram()
+    val branch       = Output(Bool())
+    val target       = Output(UInt(XLEN.W))
   })
 
   // 执行阶段完成指令的执行操作
@@ -22,7 +24,8 @@ class ExecuteUnit extends Module {
   fu.data.src_info := io.executeStage.data.src_info
 
   io.dataSram <> fu.dataSram
-
+  io.branch := fu.branch
+  io.target := fu.target
   io.memoryStage.data.pc       := fu.data.pc
   io.memoryStage.data.info     := fu.data.info
   io.memoryStage.data.src_info := fu.data.src_info

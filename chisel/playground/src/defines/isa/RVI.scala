@@ -125,22 +125,43 @@ object RV64MemInstr extends HasInstrType {
   def SD  = BitPat("b???????_?????_?????_011_?????_0100011")
   
   val table = Array(
-    LB     -> List(InstrI, FuType.lsu, LSUOpType.lb),
-    LH     -> List(InstrI, FuType.lsu, LSUOpType.lh),
-    LW     -> List(InstrI, FuType.lsu, LSUOpType.lw),
-    LD     -> List(InstrI, FuType.lsu, LSUOpType.ld),
-    LBU    -> List(InstrI, FuType.lsu, LSUOpType.lbu),
-    LHU    -> List(InstrI, FuType.lsu, LSUOpType.lhu),
-    LWU    -> List(InstrI, FuType.lsu, LSUOpType.lwu),
-    SB     -> List(InstrS, FuType.lsu, LSUOpType.sb),
-    SH     -> List(InstrS, FuType.lsu, LSUOpType.sh),
-    SW     -> List(InstrS, FuType.lsu, LSUOpType.sw),
-    SD     -> List(InstrS, FuType.lsu, LSUOpType.sd)
+    LB  -> List(InstrI, FuType.lsu, LSUOpType.lb),
+    LH  -> List(InstrI, FuType.lsu, LSUOpType.lh),
+    LW  -> List(InstrI, FuType.lsu, LSUOpType.lw),
+    LD  -> List(InstrI, FuType.lsu, LSUOpType.ld),
+    LBU -> List(InstrI, FuType.lsu, LSUOpType.lbu),
+    LHU -> List(InstrI, FuType.lsu, LSUOpType.lhu),
+    LWU -> List(InstrI, FuType.lsu, LSUOpType.lwu),
+    SB  -> List(InstrS, FuType.lsu, LSUOpType.sb),
+    SH  -> List(InstrS, FuType.lsu, LSUOpType.sh),
+    SW  -> List(InstrS, FuType.lsu, LSUOpType.sw),
+    SD  -> List(InstrS, FuType.lsu, LSUOpType.sd)
   )
-} 
+}
+object RV64BruInstr extends HasInstrType{
+  def JAL  = BitPat("b????????????????????_?????_1101111")
+  def JALR = BitPat("b????????????_?????_000_?????_1100111")
+  def BEQ  = BitPat("b???????_?????_?????_000_?????_1100011")
+  def BNE  = BitPat("b???????_?????_?????_001_?????_1100011")
+  def BLT  = BitPat("b???????_?????_?????_100_?????_1100011")
+  def BGE  = BitPat("b???????_?????_?????_101_?????_1100011")
+  def BLTU = BitPat("b???????_?????_?????_110_?????_1100011")
+  def BGEU = BitPat("b???????_?????_?????_111_?????_1100011")
+  val table = Array(
+    JAL  -> List(InstrJ, FuType.bru, BRUOpType.jal),
+    JALR -> List(InstrI, FuType.bru, BRUOpType.jalr),
+    BEQ  -> List(InstrB, FuType.bru, BRUOpType.beq),
+    BNE  -> List(InstrB, FuType.bru, BRUOpType.bne),
+    BLT  -> List(InstrB, FuType.bru, BRUOpType.blt),
+    BGE  -> List(InstrB, FuType.bru, BRUOpType.bge),
+    BLTU -> List(InstrB, FuType.bru, BRUOpType.bltu),
+    BGEU -> List(InstrB, FuType.bru, BRUOpType.bgeu)
+  )
+}
 object RVIInstr extends CoreParameter {
   val table = RV32I_ALUInstr.table ++
     (if (XLEN == 64) RV64IInstr.table else Array.empty) ++
     (if (cpuConfig.hasMExtension) RV64MInstr.table else Array.empty)++
-    RV64MemInstr.table
+    RV64MemInstr.table++
+    RV64BruInstr.table
 }
