@@ -26,7 +26,7 @@ class Bru extends Module{
         BRUOpType.blt -> (src1_data.asSInt < src1_data.asSInt),
         BRUOpType.bge -> (src1_data.asSInt > src2_data.asSInt),
         BRUOpType.bltu -> (src1_data < src2_data),
-        BRUOpType.bgeu -> (src1_data < src2_data)
+        BRUOpType.bgeu -> (src1_data > src2_data)
     ))
     val is_branch = isBranch(op)
     val is_jump = isJump(op)
