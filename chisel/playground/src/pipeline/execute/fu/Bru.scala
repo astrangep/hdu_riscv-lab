@@ -23,7 +23,7 @@ class Bru extends Module{
     val branch_bool = MuxLookup(op, false.B)(Seq(
         BRUOpType.beq -> (src1_data === src2_data),
         BRUOpType.bne -> !(src1_data === src2_data),
-        BRUOpType.blt -> (src1_data.asSInt < src1_data.asSInt),
+        BRUOpType.blt -> (src1_data.asSInt < src2_data.asSInt),
         BRUOpType.bge -> (src1_data.asSInt >= src2_data.asSInt),
         BRUOpType.bltu -> (src1_data < src2_data),
         BRUOpType.bgeu -> (src1_data >= src2_data)
