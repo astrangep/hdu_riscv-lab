@@ -32,5 +32,5 @@ class MemoryStage extends Module {
   data.rd_info := Mux(io.executeUnit_ctrl.do_flush, 0.U.asTypeOf(new RdInfo()), Mux(io.executeUnit_ctrl.allow_to_go, io.executeUnit.data.rd_info, data.rd_info))
   data.info.valid := Mux(io.executeUnit_ctrl.do_flush, false.B, io.executeUnit.data.info.valid)
   io.memoryUnit.data := data
-  io.memoryUnit.data.info.valid := data.info.valid && allow_to_go
+  io.memoryUnit.data.info.valid := data.info.valid && io.executeUnit_ctrl.allow_to_go
 }
