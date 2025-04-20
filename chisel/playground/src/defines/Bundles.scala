@@ -63,3 +63,8 @@ class DEBUG extends Bundle {
   val rf_wnum  = Output(UInt(REG_ADDR_WID.W)) // 写回阶段的寄存器写地址
   val rf_wdata = Output(UInt(XLEN.W)) // 写回阶段的寄存器写数据
 }
+
+class CtrlSignal extends Bundle{
+  val allow_to_go = Output(Bool())
+  val do_flush    = Output(Bool())
+}

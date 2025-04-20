@@ -20,11 +20,15 @@ class ExecuteStage extends Module {
   val io = IO(new Bundle {
     val decodeUnit  = Input(new DecodeUnitExecuteUnit())
     val executeUnit = Output(new DecodeUnitExecuteUnit())
+    val decodeUnit_ctrl = Flipped(new CtrlSignal())
   })
 
   val data = RegInit(0.U.asTypeOf(new IdExeData()))
 
-  data := io.decodeUnit.data
-  
+  when(io.decodeUnit_ctrl.do_flush){
+    data := 0.U.asTypeOf(new IdExeData()) 
+  }.elsewhen(io.decodeUnit_ctrl.allow_to_go){
+    data := io.decodeUnit.data
+  }
   io.executeUnit.data := data
 }

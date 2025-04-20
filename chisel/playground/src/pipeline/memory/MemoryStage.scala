@@ -21,11 +21,16 @@ class MemoryStage extends Module {
   val io = IO(new Bundle {
     val executeUnit = Input(new ExecuteUnitMemoryUnit())
     val memoryUnit  = Output(new ExecuteUnitMemoryUnit())
+    val executeUnit_ctrl = Flipped(new CtrlSignal())
   })
 
   val data = RegInit(0.U.asTypeOf(new ExeMemData()))
 
-  data := io.executeUnit.data
+  when(io.executeUnit_ctrl.do_flush){
+    data := 0.U.asTypeOf(new ExeMemData()) 
+  }.elsewhen(io.executeUnit_ctrl.allow_to_go){
+    data := io.executeUnit.data
+  }
 
   io.memoryUnit.data := data
 }
