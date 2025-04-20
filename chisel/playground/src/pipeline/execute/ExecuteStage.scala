@@ -27,6 +27,7 @@ class ExecuteStage extends Module {
 
   data.info := io.decodeUnit.data.info
   data.pc := io.decodeUnit.data.pc
+  data.src_info := io.decodeUnit.data.src_info
   data.info.valid := Mux(io.decodeUnit_ctrl.do_flush, false.B, io.decodeUnit.data.info.valid && io.decodeUnit_ctrl.allow_to_go)
   io.executeUnit.data := data
 }
