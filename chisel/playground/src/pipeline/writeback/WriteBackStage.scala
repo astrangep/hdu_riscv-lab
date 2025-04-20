@@ -23,10 +23,7 @@ class WriteBackStage extends Module {
   })
 
   val data = RegInit(0.U.asTypeOf(new MemWbData()))
-  val next_data = Wire(new MemWbData())
-  next_data := Mux(io.memoryUnit_ctrl.do_flush, 0.U.asTypeOf(new MemWbData()), Mux(io.memoryUnit_ctrl.allow_to_go,io.memoryUnit.data, data))
-  next_data.info.valid := !io.memoryUnit_ctrl.do_flush && io.memoryUnit.data.info.valid && io.memoryUnit_ctrl.allow_to_go 
-
-  data := next_data  // 单一时钟沿更新所有字段
+  data := Mux(io.memoryUnit_ctrl.do_flush, 0.U.asTypeOf(new MemWbData()), Mux(io.memoryUnit_ctrl.allow_to_go, io.memoryUnit.data, data))
+  data.info.valid := !io.memoryUnit_ctrl.do_flush && io.memoryUnit.data.info.valid && io.memoryUnit_ctrl.allow_to_go
   io.writeBackUnit.data := data
 }
