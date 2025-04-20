@@ -26,10 +26,7 @@ class MemoryStage extends Module {
 
   val data = RegInit(0.U.asTypeOf(new ExeMemData()))
 
-  data.info := io.executeUnit.data.info
-  data.pc := io.executeUnit.data.pc
-  data.src_info := io.executeUnit.data.src_info
-  data.rd_info := io.executeUnit.data.rd_info
+  data := io.memoryUnit.data
   data.info.valid := Mux(io.executeUnit_ctrl.do_flush, false.B, io.executeUnit.data.info.valid && io.executeUnit_ctrl.allow_to_go)
   io.memoryUnit.data := data
 }
