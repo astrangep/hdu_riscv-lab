@@ -25,8 +25,8 @@ class DecodeStage extends Module {
 
   val data = RegInit(0.U.asTypeOf(new IfIdData()))
 
-  data.inst := io.fetchUnit.data.inst
-  data.pc := io.fetchUnit.data.pc
+  data.inst := Mux(io.fetchUnit_ctrl.do_flush, 0.U, Mux(io.fetchUnit_ctrl.allow_to_go, io.fetchUnit.data.inst, data.inst))
+  data.pc := Mux(io.fetchUnit_ctrl.do_flush, 0.U, Mux(io.fetchUnit_ctrl.allow_to_go, io.fetchUnit.data.pc, data.pc))
   data.valid := Mux(io.fetchUnit_ctrl.do_flush, false.B, io.fetchUnit.data.valid && io.fetchUnit_ctrl.allow_to_go)
   io.decodeUnit.data := data
 }
