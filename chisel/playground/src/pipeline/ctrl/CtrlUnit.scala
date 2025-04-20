@@ -11,7 +11,7 @@ class CtrlUnit extends Module{
         val decodeUnit_info = Input(new Info())
         val executeUnit_info = Input(new Info())
         val memoryUnit_info = Input(new Info())
-        val writeBackUnit_info = new WriteBackUnit_info()
+        val writeBackUnit_info = Input(new WriteBackUnit_info())
         val fetchUnit_ctrl = new CtrlSignal()
         val decodeUnit_ctrl = new CtrlSignal()
         val executeUnit_ctrl = new CtrlSignal()

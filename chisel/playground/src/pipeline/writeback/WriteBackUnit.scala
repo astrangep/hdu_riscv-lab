@@ -9,7 +9,7 @@ import cpu.CpuConfig
 class WriteBackUnit extends Module {
   val io = IO(new Bundle {
     val writeBackStage = Input(new MemoryUnitWriteBackUnit())
-    val writeBackUnit_info= new WriteBackUnit_info()
+    val writeBackUnit_info= Output(new WriteBackUnit_info())
     val regfile        = Output(new RegWrite())
     val debug          = new DEBUG()
   })
