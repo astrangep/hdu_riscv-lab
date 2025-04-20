@@ -24,10 +24,7 @@ class ExecuteStage extends Module {
   })
 
   val data = RegInit(0.U.asTypeOf(new IdExeData()))
-
-  data.info := Mux(io.decodeUnit_ctrl.do_flush, 0.U.asTypeOf(new Info()), Mux(io.decodeUnit_ctrl.allow_to_go, io.decodeUnit.data.info, data.info))
-  data.pc := Mux(io.decodeUnit_ctrl.do_flush, 0.U, Mux(io.decodeUnit_ctrl.allow_to_go, io.decodeUnit.data.pc, data.pc))
-  data.src_info := Mux(io.decodeUnit_ctrl.do_flush, 0.U.asTypeOf(new SrcInfo()), Mux(io.decodeUnit_ctrl.allow_to_go, io.decodeUnit.data.src_info, data.src_info))
-  data.info.valid := Mux(io.decodeUnit_ctrl.do_flush, false.B, io.decodeUnit.data.info.valid && io.decodeUnit_ctrl.allow_to_go)
-  io.executeUnit.data := data
+  data := io.decodeUnit.data
+  io.executeUnit.data := Mux(io.decodeUnit_ctrl.do_flush, 0.U.asTypeOf(new IdExeData()), Mux(io.decodeUnit_ctrl.allow_to_go, data, io.executeUnit.data))
+  io.executeUnit.data.info.valid := Mux(io.decodeUnit_ctrl.do_flush, false.B, data.info.valid && io.decodeUnit_ctrl.allow_to_go)
 }
