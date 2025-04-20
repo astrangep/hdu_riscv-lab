@@ -9,6 +9,7 @@ import cpu.CpuConfig
 class WriteBackUnit extends Module {
   val io = IO(new Bundle {
     val writeBackStage = Input(new MemoryUnitWriteBackUnit())
+    val writeBackUnit_info= new WriteBackUnit_info()
     val regfile        = Output(new RegWrite())
     val debug          = new DEBUG()
   })
@@ -21,4 +22,8 @@ class WriteBackUnit extends Module {
   io.regfile.wen := io.writeBackStage.data.info.valid & io.writeBackStage.data.info.reg_wen
   io.regfile.waddr := io.writeBackStage.data.info.reg_waddr
   io.regfile.wdata := io.writeBackStage.data.rd_info.wdata
+  //控制单元接口
+  io.writeBackUnit_info.valid := io.writeBackStage.data.info.valid
+  io.writeBackUnit_info.reg_wen := io.writeBackStage.data.info.reg_wen
+  io.writeBackUnit_info.reg_waddr := io.writeBackStage.data.info.reg_waddr
 }

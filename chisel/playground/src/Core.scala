@@ -54,7 +54,7 @@ class Core extends Module {
   executeUnit.memoryStage.data.info <> ctrlunit.executeUnit_info
   executeUnit.branch <> ctrlunit.branch
   memoryUnit.writeBackStage.data.info <> ctrlunit.memoryUnit_info
-  writeBackUnit.writeBackStage.data.info <> ctrlunit.writeBackUnit_info
+  writeBackUnit.writeBackUnit_info <> ctrlunit.writeBackUnit_info
 
   ctrlunit.fetchUnit_ctrl <> fetchUnit.fetchUnit_ctrl
   ctrlunit.fetchUnit_ctrl <> decodeStage.fetchUnit_ctrl

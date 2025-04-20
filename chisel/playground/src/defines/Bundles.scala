@@ -68,3 +68,9 @@ class CtrlSignal extends Bundle{
   val allow_to_go = Output(Bool())
   val do_flush    = Output(Bool())
 }
+
+class WriteBackUnit_info extends Bundle{
+  val valid      = Bool()
+  val reg_wen    = Bool()
+  val reg_waddr  = UInt(REG_ADDR_WID.W)
+}
