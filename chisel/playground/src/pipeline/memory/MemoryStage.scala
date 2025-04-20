@@ -25,7 +25,9 @@ class MemoryStage extends Module {
   })
 
   val data = RegInit(0.U.asTypeOf(new ExeMemData()))
-  data := Mux(io.executeUnit_ctrl.do_flush, 0.U.asTypeOf(new ExeMemData()), Mux(io.executeUnit_ctrl.allow_to_go, io.executeUnit.data, data))
-  data.info.valid := !io.executeUnit_ctrl.do_flush && io.executeUnit.data.info.valid && io.executeUnit_ctrl.allow_to_go
+  val next_data = Wire(new ExeMemData())
+  next_data := Mux(io.executeUnit_ctrl.do_flush, 0.U.asTypeOf(new ExeMemData()), Mux(io.executeUnit_ctrl.allow_to_go, io.executeUnit.data, data))
+  next_data.info.valid := !io.executeUnit_ctrl.do_flush && io.executeUnit.data.info.valid && io.executeUnit_ctrl.allow_to_go
+  data := next_data
   io.memoryUnit.data := data
 }
