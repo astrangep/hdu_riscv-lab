@@ -19,18 +19,18 @@ class CtrlUnit extends Module{
         val branch = Input(Bool())
     })
     
-    val exe_conflict = io.executeUnit_info.reg_wen && !(io.executeUnit_info.reg_waddr === 0.U) && 
+    val exe_conflict = dontTouch(io.executeUnit_info.reg_wen && !(io.executeUnit_info.reg_waddr === 0.U) && 
     ((io.decodeUnit_info.src1_ren && (io.decodeUnit_info.src1_raddr === io.executeUnit_info.reg_waddr))|
     (io.decodeUnit_info.src2_ren && (io.decodeUnit_info.src2_raddr === io.executeUnit_info.reg_waddr))
-    )
-    val mem_conflict = io.memoryUnit_info.reg_wen && !(io.memoryUnit_info.reg_waddr === 0.U) && 
+    ))
+    val mem_conflict = dontTouch(io.memoryUnit_info.reg_wen && !(io.memoryUnit_info.reg_waddr === 0.U) && 
     ((io.decodeUnit_info.src1_ren && (io.decodeUnit_info.src1_raddr === io.memoryUnit_info.reg_waddr))|
     (io.decodeUnit_info.src2_ren && (io.decodeUnit_info.src2_raddr === io.memoryUnit_info.reg_waddr))
-    )
-    val wb_conflict =  io.writeBackUnit_info.reg_wen && !(io.writeBackUnit_info.reg_waddr === 0.U) && 
+    ))
+    val wb_conflict = dontTouch(io.writeBackUnit_info.reg_wen && !(io.writeBackUnit_info.reg_waddr === 0.U) && 
     ((io.decodeUnit_info.src1_ren && (io.decodeUnit_info.src1_raddr === io.writeBackUnit_info.reg_waddr))|
     (io.decodeUnit_info.src2_ren && (io.decodeUnit_info.src2_raddr === io.writeBackUnit_info.reg_waddr))
-    )
+    ))
     val conflict = exe_conflict | mem_conflict | wb_conflict
 
     io.fetchUnit_ctrl.allow_to_go := Mux(conflict, false.B, true.B)
