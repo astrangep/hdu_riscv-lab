@@ -27,7 +27,6 @@ class DecodeStage extends Module {
 
   data.inst := Mux(io.fetchUnit_ctrl.do_flush, 0.U, Mux(io.fetchUnit_ctrl.allow_to_go, io.fetchUnit.data.inst, data.inst))
   data.pc := Mux(io.fetchUnit_ctrl.do_flush, 0.U, Mux(io.fetchUnit_ctrl.allow_to_go, io.fetchUnit.data.pc, data.pc))
-  data.valid := Mux(io.fetchUnit_ctrl.do_flush, false.B, io.fetchUnit.data.valid)
+  data.valid := Mux(io.fetchUnit_ctrl.do_flush, false.B, io.fetchUnit.data.valid && io.fetchUnit_ctrl.allow_to_go)
   io.decodeUnit.data := data
-  io.decodeUnit.data.valid := data.valid && io.fetchUnit_ctrl.allow_to_go
 }
