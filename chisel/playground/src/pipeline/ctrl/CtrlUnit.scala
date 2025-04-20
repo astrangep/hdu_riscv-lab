@@ -31,7 +31,7 @@ class CtrlUnit extends Module{
     ((io.decodeUnit_info.src1_ren && (io.decodeUnit_info.src1_raddr === io.writeBackUnit_info.reg_waddr))|
     (io.decodeUnit_info.src2_ren && (io.decodeUnit_info.src2_raddr === io.writeBackUnit_info.reg_waddr))
     ))
-    val conflict = exe_conflict | mem_conflict | wb_conflict
+    val conflict = false.B
     io.fetchUnit_ctrl.allow_to_go := Mux(conflict, false.B, true.B)
     io.fetchUnit_ctrl.do_flush := io.branch
     io.decodeUnit_ctrl.allow_to_go := Mux(conflict, false.B, true.B)
