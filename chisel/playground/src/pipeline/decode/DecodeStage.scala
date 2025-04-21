@@ -20,11 +20,10 @@ class DecodeStage extends Module {
   val io = IO(new Bundle {
     val fetchUnit  = Flipped(new FetchUnitDecodeUnit())
     val decodeUnit = new FetchUnitDecodeUnit()
+    val fetchUnit_ctrl = Flipped(new CtrlSignal())
   })
 
   val data = RegInit(0.U.asTypeOf(new IfIdData()))
-
-  data := io.fetchUnit.data
-
+  data := Mux(io.fetchUnit_ctrl.do_flush, 0.U.asTypeOf(new IfIdData()), Mux(io.fetchUnit_ctrl.allow_to_go, io.fetchUnit.data, data))
   io.decodeUnit.data := data
 }

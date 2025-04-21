@@ -32,5 +32,5 @@ class Bru extends Module{
     val is_jump = isJump(op)
     io.result := pc + 4.U
     io.branch := io.info.valid && (io.info.fusel === FuType.bru) && ((is_branch && branch_bool)| is_jump)
-    io.target := Mux(io.info.op === BRUOpType.jalr, (src1_data + imm) & (~1.U(XLEN.W)), pc + imm)
+    io.target := Mux(io.info.op === BRUOpType.jalr, (src1_data + src2_data) & (~1.U(XLEN.W)), pc + imm)
 }

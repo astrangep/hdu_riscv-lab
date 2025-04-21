@@ -19,11 +19,10 @@ class WriteBackStage extends Module {
   val io = IO(new Bundle {
     val memoryUnit    = Input(new MemoryUnitWriteBackUnit())
     val writeBackUnit = Output(new MemoryUnitWriteBackUnit())
+    val memoryUnit_ctrl = Flipped(new CtrlSignal())
   })
 
   val data = RegInit(0.U.asTypeOf(new MemWbData()))
-  
-  data := io.memoryUnit.data
-  
+  data := Mux(io.memoryUnit_ctrl.do_flush, 0.U.asTypeOf(new MemWbData()), Mux(io.memoryUnit_ctrl.allow_to_go, io.memoryUnit.data, data))
   io.writeBackUnit.data := data
 }

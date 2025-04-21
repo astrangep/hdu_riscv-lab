@@ -25,6 +25,7 @@ class Core extends Module {
   val memoryUnit     = Module(new MemoryUnit()).io
   val writeBackStage = Module(new WriteBackStage()).io
   val writeBackUnit  = Module(new WriteBackUnit()).io
+  val ctrlunit       = Module(new CtrlUnit()).io
 
   // 取指单元
   fetchUnit.branch := executeUnit.branch
@@ -48,4 +49,18 @@ class Core extends Module {
   writeBackUnit.regfile <> regfile.write
   
   writeBackUnit.debug <> io.debug
+  //ctrl
+  decodeUnit.executeStage.data.info <> ctrlunit.decodeUnit_info
+  executeUnit.memoryStage.data.info <> ctrlunit.executeUnit_info
+  executeUnit.branch <> ctrlunit.branch
+  memoryUnit.writeBackStage.data.info <> ctrlunit.memoryUnit_info
+  writeBackUnit.writeBackUnit_info <> ctrlunit.writeBackUnit_info
+
+  ctrlunit.fetchUnit_ctrl <> fetchUnit.fetchUnit_ctrl
+  ctrlunit.fetchUnit_ctrl <> decodeStage.fetchUnit_ctrl
+  ctrlunit.decodeUnit_ctrl <> executeStage.decodeUnit_ctrl
+  ctrlunit.executeUnit_ctrl <> memoryStage.executeUnit_ctrl
+  ctrlunit.memoryUnit_ctrl <> writeBackStage.memoryUnit_ctrl
 }
+
+

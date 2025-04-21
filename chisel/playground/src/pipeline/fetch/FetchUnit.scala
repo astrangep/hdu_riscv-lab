@@ -8,10 +8,11 @@ import cpu.defines._
 
 class FetchUnit extends Module {
   val io = IO(new Bundle {
-    val decodeStage = new FetchUnitDecodeUnit()
-    val instSram    = new InstSram()
-    val branch      = Input(Bool())
-    val target      = Input(UInt(XLEN.W))
+    val decodeStage    = new FetchUnitDecodeUnit()
+    val instSram       = new InstSram()
+    val branch         = Input(Bool())
+    val target         = Input(UInt(XLEN.W))
+    val fetchUnit_ctrl = Flipped(new CtrlSignal())
   })
 
   val boot :: send :: receive :: Nil = Enum(3)
@@ -31,7 +32,7 @@ class FetchUnit extends Module {
 
   val pc = RegEnable(io.instSram.addr, (PC_INIT - 4.U), state =/= boot)
 
-  io.instSram.addr := Mux(io.branch, io.target, pc+4.U)
+  io.instSram.addr := Mux(io.branch, io.target, Mux(io.fetchUnit_ctrl.allow_to_go, pc + 4.U, pc))
 
   io.decodeStage.data.valid := state === receive
   io.decodeStage.data.pc    := pc
