@@ -41,7 +41,7 @@ class Core extends Module {
   decodeUnit.writeBackUnit_info <> writeBackUnit.writeBackUnit_info
   decodeUnit.executeUnit_rd_info <> executeUnit.memoryStage.data.rd_info
   decodeUnit.memoryUnit_rd_info <> memoryUnit.writeBackStage.data.rd_info
-  decodeUnit.writeBackUnit_rd_info <> writeBackUnit.debug.rf_wdata
+  decodeUnit.writeBackUnit_rd_info <> writeBackUnit.writeBackUnit_rd_info
 
   executeStage.executeUnit <> executeUnit.executeStage
   executeUnit.memoryStage <> memoryStage.executeUnit
