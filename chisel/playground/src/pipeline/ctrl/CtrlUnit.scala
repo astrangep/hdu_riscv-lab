@@ -19,7 +19,7 @@ class CtrlUnit extends Module{
         val branch = Input(Bool())
     })
     val exe_conflict =(io.executeUnit_info.valid && io.executeUnit_info.fusel ===
-        FuType.lsu && LSUOpType.isLoad(io.executeUnit_info.op))| io.executeUnit_info.reg_wen && !(io.executeUnit_info.reg_waddr === 0.U)&&((io.decodeUnit_info.src1_ren && (io.decodeUnit_info.src1_raddr === io.executeUnit_info.reg_waddr))|
+        FuType.lsu && LSUOpType.isLoad(io.executeUnit_info.op))&&io.executeUnit_info.reg_wen && !(io.executeUnit_info.reg_waddr === 0.U)&&((io.decodeUnit_info.src1_ren && (io.decodeUnit_info.src1_raddr === io.executeUnit_info.reg_waddr))|
         (io.decodeUnit_info.src2_ren && (io.decodeUnit_info.src2_raddr === io.executeUnit_info.reg_waddr)))  
     io.fetchUnit_ctrl.allow_to_go := Mux(exe_conflict, false.B, true.B)
     io.fetchUnit_ctrl.do_flush := io.branch
