@@ -26,17 +26,30 @@ class FowardCtrl extends Module{
     val ex_waddr   = io.executeUnit_info.reg_waddr
     val me_waddr   = io.memoryUnit_info.reg_waddr
     val wb_waddr   = io.writeBackUnit_info.reg_waddr
-    io.src_info_out.src1_data := Mux(src1_ren, MuxLookup(src1_raddr, src1_data)(Seq(
-            0.U      -> 0.U,
-            ex_waddr -> io.executeUnit_rd_info.wdata,
-            me_waddr -> io.memoryUnit_rd_info.wdata,
-            wb_waddr -> io.writeBackUnit_rd_info.wdata
-    )), src1_data)
-    io.src_info_out.src2_data := Mux(src2_ren, MuxLookup(src2_raddr, src2_data)(Seq(
-            0.U      -> 0.U,
-            ex_waddr -> io.executeUnit_rd_info.wdata,
-            me_waddr -> io.memoryUnit_rd_info.wdata,
-            wb_waddr -> io.writeBackUnit_rd_info.wdata
-    )), src2_data)
+    io.src_info_out.src1_data := Mux(
+        src1_ren,
+        MuxCase(
+            src1_data,
+            Seq(
+                (src1_raddr === 0.U,0.U),
+                (src1_raddr === ex_waddr, io.executeUnit_rd_info.wdata), 
+                (src1_raddr === me_waddr, io.memoryUnit_rd_info.wdata),  
+                (src1_raddr === wb_waddr, io.writeBackUnit_rd_info.wdata)
+            )
+            ), src1_data
+    )
+    io.src_info_out.src2_data := Mux(
+    src2_ren,
+    MuxCase(
+        src2_data, 
+        Seq(
+            (src2_raddr === 0.U,     0.U),
+            (src2_raddr === ex_waddr, io.executeUnit_rd_info.wdata), 
+            (src2_raddr === me_waddr, io.memoryUnit_rd_info.wdata),  
+            (src2_raddr === wb_waddr, io.writeBackUnit_rd_info.wdata)                           
+        )
+    ),
+    src2_data  
+)
 }
 
