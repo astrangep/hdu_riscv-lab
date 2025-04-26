@@ -18,7 +18,7 @@ class CtrlUnit extends Module{
         val memoryUnit_ctrl = new CtrlSignal()
         val branch = Input(Bool())
     })
-    val conflict = io.executeUnit_info.reg_wen && !(io.executeUnit_info.reg_waddr === 0.U) && io.executeUnit_info.fusel ===
+    val conflict = io.executeUnit_info.valid && io.executeUnit_info.fusel ===
         FuType.lsu && LSUOpType.isLoad(io.executeUnit_info.op) && ((io.decodeUnit_info.src1_ren && (io.decodeUnit_info.src1_raddr === io.executeUnit_info.reg_waddr))|
         (io.decodeUnit_info.src2_ren && (io.decodeUnit_info.src2_raddr === io.executeUnit_info.reg_waddr)))
     io.fetchUnit_ctrl.allow_to_go := Mux(conflict, false.B, true.B)
