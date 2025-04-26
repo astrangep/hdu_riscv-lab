@@ -21,9 +21,9 @@ class CtrlUnit extends Module{
     val conflict = io.executeUnit_info.reg_wen && !(io.executeUnit_info.reg_waddr === 0.U) && io.executeUnit_info.fusel ===
         FuType.lsu && LSUOpType.isLoad(io.executeUnit_info.op) && ((io.decodeUnit_info.src1_ren && (io.decodeUnit_info.src1_raddr === io.executeUnit_info.reg_waddr))|
         (io.decodeUnit_info.src2_ren && (io.decodeUnit_info.src2_raddr === io.executeUnit_info.reg_waddr)))
-    io.fetchUnit_ctrl.allow_to_go := conflict
+    io.fetchUnit_ctrl.allow_to_go := Mux(conflict, false.B, true.B)
     io.fetchUnit_ctrl.do_flush := io.branch
-    io.decodeUnit_ctrl.allow_to_go := conflict
+    io.decodeUnit_ctrl.allow_to_go := Mux(conflict,false.B, true.B)
     io.decodeUnit_ctrl.do_flush := io.branch
     io.executeUnit_ctrl.allow_to_go := true.B
     io.executeUnit_ctrl.do_flush := false.B
