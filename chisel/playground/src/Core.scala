@@ -36,6 +36,12 @@ class Core extends Module {
   decodeStage.decodeUnit <> decodeUnit.decodeStage
   decodeUnit.regfile <> regfile.read
   decodeUnit.executeStage <> executeStage.decodeUnit
+  decodeUnit.executeUnit_info <> executeUnit.memoryStage.data.info
+  decodeUnit.memoryUnit_info <> memoryUnit.writeBackStage.data.info
+  decodeUnit.writeBackUnit_info <> writeBackUnit.writeBackUnit_info
+  decodeUnit.executeUnit_rd_info <> executeUnit.memoryStage.data.rd_info
+  decodeUnit.memoryUnit_rd_info <> memoryUnit.writeBackStage.data.rd_info
+  decodeUnit.writeBackUnit_rd_info <> writeBackUnit.writeBackUnit_rd_info
 
   executeStage.executeUnit <> executeUnit.executeStage
   executeUnit.memoryStage <> memoryStage.executeUnit
