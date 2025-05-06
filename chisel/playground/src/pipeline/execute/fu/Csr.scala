@@ -13,7 +13,6 @@ class Csr extends Module {
 
   })
 
-  // CSR寄存器地址常量
   val CSR_ADDRS = Map(
     "CYCLE"       -> "hc00".U(12.W),
     "MVENDORID"   -> "hf11".U(12.W),
@@ -32,7 +31,6 @@ class Csr extends Module {
     "MIP"         -> "h344".U(12.W)
   )
 
-  // CSR寄存器定义
   case class CsrReg(
     reg: UInt,
     readMask: UInt = Fill(XLEN, 1.U),
@@ -119,7 +117,7 @@ class Csr extends Module {
       default_read := csr.reg & csr.readMask
       valid := true.B
       
-      when(io.info.valid && io.info.fusel === FuType.csr && csr.write) {
+      when(io.info.valid && csr.write) {
         val writeData = MuxLookup(io.info.op(1, 0), 0.U)(
           Seq(
             "b01".U -> src_value,                    
