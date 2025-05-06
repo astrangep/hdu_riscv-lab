@@ -35,106 +35,99 @@ class Csr extends Module {
     reg: UInt,
     readMask: UInt = Fill(XLEN, 1.U),
     writeMask: UInt = 0.U(XLEN.W),
-    isRO: Bool = false.B
+    write: Bool = false.B
   )
-  // 初始化所有CSR寄存器
   val csrRegs = Map(
     CSR_ADDRS("CYCLE") -> CsrReg(
       reg = RegInit(0.U(XLEN.W)),
-      isRO = true.B
     ),
     CSR_ADDRS("MVENDORID") -> CsrReg(
       reg = RegInit(0.U(XLEN.W)),
-      isRO = true.B
     ),
     CSR_ADDRS("MARCHID") -> CsrReg(
       reg = RegInit(0.U(XLEN.W)),
-      isRO = true.B
     ),
     CSR_ADDRS("MIMPID") -> CsrReg(
       reg = RegInit(0.U(XLEN.W)),
-      isRO = true.B
     ),
     CSR_ADDRS("MHARTID") -> CsrReg(
       reg = RegInit(0.U(XLEN.W)),
-      isRO = true.B
     ),
     CSR_ADDRS("MSTATUS") -> CsrReg(
       reg = RegInit("h1800".U(XLEN.W)),
-      writeMask = "h88".U(XLEN.W)
+      writeMask = "h88".U(XLEN.W),
+      write = true.B
     ),
     CSR_ADDRS("MISA") -> CsrReg(
       reg = RegInit("h8000000000001100".U(XLEN.W)),
-      isRO = true.B
     ),
     CSR_ADDRS("MIE") -> CsrReg(
       reg = RegInit(0.U(XLEN.W)),
-      writeMask = Fill(XLEN, 1.U)
+      writeMask = Fill(XLEN, 1.U),
+      write = true.B
     ),
     CSR_ADDRS("MTVEC") -> CsrReg(
       reg = RegInit(0.U(XLEN.W)),
-      writeMask = Fill(XLEN, 1.U)
+      writeMask = Fill(XLEN, 1.U),
+      write = true.B
     ),
     CSR_ADDRS("MCOUNTEREN") -> CsrReg(
       reg = RegInit(0.U(XLEN.W)),
-      writeMask = "hfffffffffffffff7".U(XLEN.W)
+      writeMask = "hffffffffffffffff".U(XLEN.W),
+      write = true.B
     ),
     CSR_ADDRS("MSCRATCH") -> CsrReg(
       reg = RegInit(0.U(XLEN.W)),
-      writeMask = Fill(XLEN, 1.U)
+      writeMask = Fill(XLEN, 1.U),
+      write = true.B
     ),
     CSR_ADDRS("MEPC") -> CsrReg(
       reg = RegInit(0.U(XLEN.W)),
-      writeMask = Fill(XLEN, 1.U)
+      writeMask = Fill(XLEN, 1.U),
+      write = true.B
     ),
     CSR_ADDRS("MCAUSE") -> CsrReg(
       reg = RegInit(0.U(XLEN.W)),
-      writeMask = Fill(XLEN, 1.U)
+      writeMask = Fill(XLEN, 1.U),
+      write = true.B
     ),
     CSR_ADDRS("MTVAL") -> CsrReg(
       reg = RegInit(0.U(XLEN.W)),
-      writeMask = Fill(XLEN, 1.U)
+      writeMask = Fill(XLEN, 1.U),
+      write = true.B
     ),
     CSR_ADDRS("MIP") -> CsrReg(
       reg = RegInit(0.U(XLEN.W)),
-      writeMask = "h888".U(XLEN.W)
+      writeMask = "h888".U(XLEN.W),
+      write = true.B
     )
   )
-
-  // cycle寄存器自增
   csrRegs(CSR_ADDRS("CYCLE")).reg := csrRegs(CSR_ADDRS("CYCLE")).reg + 1.U
+  val csr_addr = io.info.inst(31, 20)
+  val rs1_data = io.src_info.src1_data
+  val zimm = SignedExtend(io.info.inst(19,15), 64)
+  val is_imm = io.info.op(2)
+  val src_value = Mux(is_imm, zimm, rs1_data)
 
-  // 获取CSR地址和操作数
-  val csrAddr = io.info.inst(31, 20)
-  val rs1Data = io.src_info.src1_data
-  val zimm = Cat(0.U((XLEN - 5).W), io.info.inst(19, 15))
-  val isImm = io.info.op(2)
-  val srcValue = Mux(isImm, zimm, rs1Data)
+  val default_read = WireInit(0.U(XLEN.W))
+  val valid = WireInit(false.B)
 
-  // 默认返回值
-  val defaultRead = WireInit(0.U(XLEN.W))
-  val readValid = WireInit(false.B)
-
-  // 查找并处理CSR寄存器
   csrRegs.foreach { case (addr, csr) =>
-    when(csrAddr === addr) {
-      defaultRead := csr.reg & csr.readMask
-      readValid := true.B
+    when(csr_addr === addr) {
+      default_read := csr.reg & csr.readMask
+      valid := true.B
       
-      // 写操作处理
-      when(io.info.valid && io.info.fusel === FuType.csr && !csr.isRO) {
+      when(io.info.valid && io.info.fusel === FuType.csr && csr.write) {
         val writeData = MuxLookup(io.info.op(1, 0), 0.U)(
           Seq(
-            "b01".U -> srcValue,                     // write/writei
-            "b10".U -> (csr.reg | srcValue),        // set/seti
-            "b11".U -> (csr.reg & ~srcValue)        // clear/cleari
+            "b01".U -> src_value,                    
+            "b10".U -> (csr.reg | src_value),        
+            "b11".U -> (csr.reg & ~src_value)        
           )
         )
-        csr.reg := (writeData & csr.writeMask) | (csr.reg & ~csr.writeMask)
+        csr.reg := writeData & csr.writeMask
       }
     }
   }
-
-  // 输出结果
-  io.result := defaultRead
+  io.result := default_read
 }
