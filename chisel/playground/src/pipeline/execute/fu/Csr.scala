@@ -127,7 +127,7 @@ class Csr extends Module {
             "b11".U -> (csr.reg & ~src_value)        
           )
         )
-        csr.reg := (writeData & csr.writeMask) | (csr.reg & ~csr.writeMask)
+        csr.reg := writeData & csr.writeMask
       }
     }
   }
