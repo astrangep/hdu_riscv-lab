@@ -73,7 +73,7 @@ class Csr extends Module {
     ),
     CSR_ADDRS("MCOUNTEREN") -> CsrReg(
       reg = RegInit(0.U(XLEN.W)),
-      writeMask = "hfffffffffffffff7".U(XLEN.W),
+      writeMask = "hffffffffffffffff".U(XLEN.W),
       write = true.B
     ),
     CSR_ADDRS("MSCRATCH") -> CsrReg(
@@ -125,7 +125,7 @@ class Csr extends Module {
             "b11".U -> (csr.reg & ~src_value)        
           )
         )
-        csr.reg := writeData & csr.writeMask
+        csr.reg := (writeData & csr.writeMask) | (csr.reg & ~csr.writeMask)
       }
     }
   }
