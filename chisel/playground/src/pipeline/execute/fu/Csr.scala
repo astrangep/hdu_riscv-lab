@@ -107,7 +107,7 @@ class Csr extends Module {
   csrRegs(CSR_ADDRS("CYCLE")).reg := csrRegs(CSR_ADDRS("CYCLE")).reg + 1.U
   val csr_addr = io.info.inst(31, 20)
   val rs1_data = io.src_info.src1_data
-  val zimm = SignedExtend(io.info.inst(19,15), 64)
+  val zimm = ZeroExtend(io.info.inst(19,15), 64)
   val is_imm = io.info.op(2)
   val src_value = Mux(is_imm, zimm, rs1_data)
 
