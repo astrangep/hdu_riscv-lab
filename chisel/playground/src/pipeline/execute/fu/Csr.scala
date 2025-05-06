@@ -116,7 +116,6 @@ class Csr extends Module {
     when(csr_addr === addr) {
       default_read := csr.reg & csr.readMask
       valid := true.B
-      
       when(io.info.valid && csr.write) {
         val writeData = MuxLookup(io.info.op(1, 0), 0.U)(
           Seq(
