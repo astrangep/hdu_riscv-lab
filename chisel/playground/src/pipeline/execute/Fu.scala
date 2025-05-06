@@ -40,7 +40,8 @@ class Fu extends Module {
 
   csr.info     := io.data.info
   csr.src_info := io.data.src_info
-
+  csr.pc       := io.data.pc
+  
   io.branch := bru.branch
   io.target := bru.target
   io.data.rd_info.wdata := MuxLookup(io.data.info.fusel,0.U)(Seq(FuType.alu -> alu.result, FuType.mdu -> mdu.result, FuType.lsu -> lsu.result, FuType.bru -> bru.result, FuType.csr ->csr.result))

@@ -9,6 +9,8 @@ class Csr extends Module {
     val info = Input(new Info())
     val src_info = Input(new SrcInfo())
     val result = Output(UInt(XLEN.W))
+    val pc = Input(UInt(XLEN.W))
+
   })
 
   // CSR寄存器地址常量
