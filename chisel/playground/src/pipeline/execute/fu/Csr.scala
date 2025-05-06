@@ -75,7 +75,7 @@ class Csr extends Module {
     ),
     CSR_ADDRS("MCOUNTEREN") -> CsrReg(
       reg = RegInit(0.U(XLEN.W)),
-      writeMask = "hfffffffffffffff7".U(XLEN.W),
+      writeMask = "hffffffffffffffff".U(XLEN.W),
       write = true.B
     ),
     CSR_ADDRS("MSCRATCH") -> CsrReg(
