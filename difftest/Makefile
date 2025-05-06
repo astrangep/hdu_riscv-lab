@@ -120,4 +120,13 @@ trace_lab9: obj_dir/V$(TOP_NAME)
 	done; \
 	echo "Total tests run: $$count";
 
+help:
+	@echo "Usage: make [target]"
+	@echo "Available targets:"
+	@echo "  clean             - Remove build artifacts"
+	@echo "  verilog           - Generate verilog files"
+	@echo "  perf              - Run performance tests"
+	@echo "  lab<number>       - Run lab<number>, eg. lab1, lab2, ..."
+	@echo "  trace_lab<number> - Run lab<number> with trace, eg. trace_lab1, trace_lab2, ..."
+
 -include ../Makefile
