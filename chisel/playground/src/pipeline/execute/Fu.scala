@@ -23,7 +23,6 @@ class Fu extends Module {
   val mdu = Module(new Mdu()).io
   val lsu = Module(new Lsu()).io
   val bru = Module(new Bru()).io
-  val csr = Module(new Csr()).io
   lsu.dataSram <> io.dataSram
   alu.info     := io.data.info
   alu.src_info := io.data.src_info
@@ -38,11 +37,7 @@ class Fu extends Module {
   bru.src_info := io.data.src_info
   bru.pc       := io.data.pc
 
-  csr.info     := io.data.info
-  csr.src_info := io.data.src_info
-  csr.pc       := io.data.pc
-  
   io.branch := bru.branch
   io.target := bru.target
-  io.data.rd_info.wdata := MuxLookup(io.data.info.fusel,0.U)(Seq(FuType.alu -> alu.result, FuType.mdu -> mdu.result, FuType.lsu -> lsu.result, FuType.bru -> bru.result, FuType.csr ->csr.result))
+  io.data.rd_info.wdata := MuxLookup(io.data.info.fusel,0.U)(Seq(FuType.alu -> alu.result, FuType.mdu -> mdu.result, FuType.lsu -> lsu.result, FuType.bru -> bru.result))
 }

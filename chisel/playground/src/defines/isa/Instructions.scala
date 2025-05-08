@@ -19,12 +19,11 @@ trait HasInstrType {
 
 // 功能单元类型 Function Unit Type
 object FuType {
-  def num     = 5
+  def num     = 4
   def alu     = 0.U // arithmetic logic unit
   def mdu     = 1.U
   def lsu     = 2.U
   def bru     = 3.U
-  def csr     = 4.U
   def apply() = UInt(log2Up(num).W)
 }
 
@@ -87,7 +86,7 @@ object LSUOpType{
   def isStore(func: UInt) : Bool = func(3)
   def isLoad(func : UInt) : Bool = !isStore(func)
 }
-object BRUOpType{
+object  BRUOpType{
   def jal  = "b1000".U
   def jalr = "b1010".U
   def beq  = "b0000".U
@@ -98,12 +97,4 @@ object BRUOpType{
   def bgeu = "b0111".U
   def isBranch(func: UInt) = !func(3)
   def isJump(func: UInt) = !isBranch(func)
-}
-object CSROpType{
-  def write  = "b001".U
-  def set    = "b010".U
-  def clear  = "b011".U
-  def writei = "b101".U
-  def seti   = "b110".U
-  def cleari = "b111".U
 }

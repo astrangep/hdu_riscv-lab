@@ -10,7 +10,6 @@ class WriteBackUnit extends Module {
   val io = IO(new Bundle {
     val writeBackStage = Input(new MemoryUnitWriteBackUnit())
     val writeBackUnit_info= Output(new WriteBackUnit_info())
-    val writeBackUnit_rd_info = Output(new RdInfo())
     val regfile        = Output(new RegWrite())
     val debug          = new DEBUG()
   })
@@ -27,6 +26,4 @@ class WriteBackUnit extends Module {
   io.writeBackUnit_info.valid := io.writeBackStage.data.info.valid
   io.writeBackUnit_info.reg_wen := io.writeBackStage.data.info.reg_wen
   io.writeBackUnit_info.reg_waddr := io.writeBackStage.data.info.reg_waddr
-
-  io.writeBackUnit_rd_info := io.writeBackStage.data.rd_info
 }
