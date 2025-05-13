@@ -16,7 +16,43 @@ trait HasInstrType {
   // I、R、U、J类型的指令都需要写寄存器
   def isRegWen(instrType: UInt): Bool = instrType(2)
 }
+trait HasExceptionNO {
+  def instAddrMisaligned = 0
+  def instAccessFault   = 1
+  def illegalInst       = 2
+  def breakPoint        = 3
+  def loadAddrMisaligned = 4
+  def loadAccessFault   = 5
+  def storeAddrMisaligned = 6
+  def storeAccessFault  = 7
+  def ecallU            = 8
+  def ecallS            = 9
+  def ecallM            = 11
+  def instPageFault     = 12
+  def loadPageFault     = 13
+  def storePageFault    = 15
 
+  def msi = 3    // 机器软件中断
+  def mti = 7    // 机器定时器中断
+  def mei = 11   // 机器外部中断
+  val ExcPriority = Seq(
+    breakPoint,      
+    instPageFault,
+    instAccessFault,
+    illegalInst,
+    instAddrMisaligned,
+    ecallM,
+    ecallS,
+    ecallU,
+    loadAddrMisaligned,
+    storeAddrMisaligned,
+    loadPageFault,
+    storePageFault,
+    loadAccessFault,
+    storeAccessFault   // 最低优先级
+  )
+  val IntPriority = Seq(mei, msi, mti)
+}
 // 功能单元类型 Function Unit Type
 object FuType {
   def num     = 5
@@ -106,4 +142,17 @@ object CSROpType{
   def writei = "b101".U
   def seti   = "b110".U
   def cleari = "b111".U
+
+  def ecall  = "b1000".U
+  def ebreak = "b1001".U
+  def mret   = "b1010".U
+  
+  def isCSROp(op: UInt) = !op(3)
+}
+object Priv{
+  def u      ="b00".U
+  def s      ="b01".U
+  def h      ="b10".U
+  def m      ="b11".U
+  def apply  =UInt(2.W)
 }

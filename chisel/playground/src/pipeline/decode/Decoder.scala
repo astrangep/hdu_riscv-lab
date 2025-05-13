@@ -14,6 +14,7 @@ class Decoder extends Module with HasInstrType {
     // outputs
     val out = Output(new Bundle {
       val info = new Info()
+      val inst_illegal = Bool()
     })
   })
   val inst = io.in.inst
@@ -40,4 +41,5 @@ class Decoder extends Module with HasInstrType {
   io.out.info.imm := MuxLookup(instrType, 0.U)(Seq(InstrI -> imm_i, InstrU -> imm_u, InstrS -> imm_s, InstrB -> imm_b, InstrJ -> imm_j))
   io.out.info.src1_ren := instrType === InstrR | instrType === InstrI | instrType === InstrS | instrType === InstrB
   io.out.info.src2_ren := instrType === InstrR | instrType === InstrS | instrType === InstrB
+  io.out.inst_illegal := instrType === InstrN
 }

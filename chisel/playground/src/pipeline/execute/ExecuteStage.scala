@@ -10,6 +10,7 @@ class IdExeData extends Bundle {
   val pc       = UInt(XLEN.W)
   val info     = new Info()
   val src_info = new SrcInfo()
+  val ex       = new ExceptionInfo()
 }
 
 class DecodeUnitExecuteUnit extends Bundle {

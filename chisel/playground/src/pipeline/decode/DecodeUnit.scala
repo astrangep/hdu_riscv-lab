@@ -16,6 +16,8 @@ class DecodeUnit extends Module {
     val executeUnit_rd_info = Input(new RdInfo())
     val memoryUnit_rd_info = Input(new RdInfo())
     val writeBackUnit_rd_info = Input(new RdInfo())
+    val mode = Input(UInt(2.W))
+    val interrupt = Input(new InterruptInfo())
     // 输出
     val executeStage = Output(new DecodeUnitExecuteUnit())
   })
@@ -30,6 +32,13 @@ class DecodeUnit extends Module {
 
   info       := decoder.out.info
   info.valid := io.decodeStage.data.valid
+  //异常处理模块
+  val exctrl = Module(new ExcCtrl()).io
+  exctrl.is_illegal := decoder.out.inst_illegal
+  exctrl.info := info
+  exctrl.pc := pc
+  exctrl.interrupt := io.interrupt
+  exctrl.mode := io.mode
 
   //完成寄存器堆的读取
   io.regfile.src1.raddr := info.src1_raddr 
@@ -54,5 +63,5 @@ class DecodeUnit extends Module {
   io.executeStage.data.pc                 := pc
   io.executeStage.data.info               := info
   io.executeStage.data.src_info           := fowardctrl.src_info_out
-
+  io.executeStage.data.ex                 := exctrl.exc_info
 }

@@ -40,3 +40,4 @@ object Instructions extends HasInstrType with CoreParameter {
   val DecodeDefault = List(InstrN, FuType.alu, ALUOpType.add)
   def DecodeTable   = RVIInstr.table
 }
+

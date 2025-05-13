@@ -3,14 +3,17 @@ import chisel3._
 import chisel3.util._
 import cpu.defines._
 import cpu.defines.Const._
+import cpu.defines.CSROpType.isCSROp
 
-class Csr extends Module {
+class Csr extends Module with HasExceptionNO {
   val io = IO(new Bundle {
+    val exc_info = Input(new ExceptionInfo())
     val info = Input(new Info())
     val src_info = Input(new SrcInfo())
     val result = Output(UInt(XLEN.W))
     val pc = Input(UInt(XLEN.W))
-
+    val interrupt  = Output(new InterruptInfo())
+    val mode = Output(UInt(2.W))
   })
 
   val CSR_ADDRS = Map(
@@ -54,12 +57,12 @@ class Csr extends Module {
       reg = RegInit(0.U(XLEN.W)),
     ),
     CSR_ADDRS("MSTATUS") -> CsrReg(
-      reg = RegInit("h1800".U(XLEN.W)),
-      writeMask = "h88".U(XLEN.W),
+      reg = RegInit("h200000000".U(XLEN.W)),
+      writeMask = "h21888".U(XLEN.W),
       write = true.B
     ),
     CSR_ADDRS("MISA") -> CsrReg(
-      reg = RegInit("h8000000000001100".U(XLEN.W)),
+      reg = RegInit("h8000000000101100".U(XLEN.W)),
     ),
     CSR_ADDRS("MIE") -> CsrReg(
       reg = RegInit(0.U(XLEN.W)),
@@ -103,6 +106,8 @@ class Csr extends Module {
     )
   )
   csrRegs(CSR_ADDRS("CYCLE")).reg := csrRegs(CSR_ADDRS("CYCLE")).reg + 1.U
+  val mode = RegInit(Priv.m)
+
   val csr_addr = io.info.inst(31, 20)
   val rs1_data = io.src_info.src1_data
   val zimm = ZeroExtend(io.info.inst(19,15), 64)
@@ -110,13 +115,19 @@ class Csr extends Module {
   val src_value = Mux(is_imm, zimm, rs1_data)
 
   val default_read = WireInit(0.U(XLEN.W))
-  val valid = WireInit(false.B)
+  val illegal_addr = WireInit(true.B)
 
+  val only_read = rs1_data === 0.U && (io.info.op === CSROpType.clear | io.info.op === CSROpType.cleari | io.info.op === CSROpType.set | io.info.op === CSROpType.seti)
+  val write = io.info.valid && isCSROp(io.info.op)
+  val illegal_write = write && csr_addr(11,10) === "b'11".U && !only_read
+  val illegal_mode = mode < csr_addr(9,8)
+  val illegal_access = illegal_write | illegal_mode
+  val wen = write && !illegal_access
   csrRegs.foreach { case (addr, csr) =>
     when(csr_addr === addr) {
       default_read := csr.reg & csr.readMask
-      valid := true.B
-      when(io.info.valid && csr.write) {
+      illegal_addr := false.B
+      when(wen) {
         val writeData = MuxLookup(io.info.op(1, 0), 0.U)(
           Seq(
             "b01".U -> src_value,                    
@@ -127,6 +138,19 @@ class Csr extends Module {
         csr.reg := (writeData & csr.writeMask) | (csr.reg & ~csr.writeMask)
       }
     }
+  }
+  when((write && illegal_access) | illegal_addr){
+    io.exc_info.exception(illegalInst) := true.B
+    io.exc_info.tval := io.info.inst
+  }
+  val is_exception = io.exc_info.exception.asUInt.orR 
+  val is_interrupt = io.exc_info.interrupt.asUInt.orR
+  val has_exc = is_exception | is_interrupt
+  when(has_exc){
+      val interruptNo = PriorityMux(IntPriority.map(i => (io.exc_info.interrupt(i), i.U)))
+      val exceptionNO = PriorityMux(ExcPriority.map(e => (io.exc_info.exception(e), e.U)))
+      val causeNo = Mux(is_interrupt, interruptNo, exceptionNO)
+      
   }
   io.result := default_read
 }

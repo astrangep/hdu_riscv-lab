@@ -14,6 +14,8 @@ class ExecuteUnit extends Module {
     val dataSram     = new DataSram()
     val branch       = Output(Bool())
     val target       = Output(UInt(XLEN.W))
+    val mode = Output(UInt(2.W))
+    val interrupt = Output(new InterruptInfo())
   })
 
   // 执行阶段完成指令的执行操作
@@ -24,6 +26,8 @@ class ExecuteUnit extends Module {
   fu.data.src_info := io.executeStage.data.src_info
 
   io.dataSram <> fu.dataSram
+  io.mode := fu.mode
+  io.interrupt := fu.interrupt
   io.branch := fu.branch
   io.target := fu.target
   io.memoryStage.data.pc       := fu.data.pc

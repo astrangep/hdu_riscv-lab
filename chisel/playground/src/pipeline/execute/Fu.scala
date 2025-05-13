@@ -13,10 +13,14 @@ class Fu extends Module {
       val info     = Input(new Info())
       val src_info = Input(new SrcInfo())
       val rd_info  = Output(new RdInfo())
+      val exc_info = Input(new ExceptionInfo())
     }
     val dataSram = new DataSram()
     val branch = Output(Bool())
     val target = Output(UInt(XLEN.W))
+    val mode = Output(UInt(2.W))
+    val interrupt = Output(new InterruptInfo())
+    val ex = Output(new ExceptionInfo())
   })
 
   val alu = Module(new Alu()).io
@@ -33,15 +37,20 @@ class Fu extends Module {
 
   lsu.info     := io.data.info
   lsu.src_info := io.data.src_info
+  lsu.exc_info := io.data.exc_info
+
 
   bru.info     := io.data.info
   bru.src_info := io.data.src_info
   bru.pc       := io.data.pc
+  bru.exc_info := lsu.ex
 
   csr.info     := io.data.info
   csr.src_info := io.data.src_info
   csr.pc       := io.data.pc
   
+  io.mode := csr.mode
+  io.interrupt := csr.interrupt
   io.branch := bru.branch
   io.target := bru.target
   io.data.rd_info.wdata := MuxLookup(io.data.info.fusel,0.U)(Seq(FuType.alu -> alu.result, FuType.mdu -> mdu.result, FuType.lsu -> lsu.result, FuType.bru -> bru.result, FuType.csr ->csr.result))

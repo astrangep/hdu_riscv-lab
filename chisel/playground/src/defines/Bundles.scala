@@ -21,7 +21,7 @@ class RdInfo extends Bundle {
   val wdata = UInt(XLEN.W)
 }
 
-class Info extends Bundle {
+class   Info extends Bundle {
   val inst = UInt(XLEN.W)
   val valid      = Bool()
   val src1_raddr = UInt(REG_ADDR_WID.W)
@@ -34,6 +34,11 @@ class Info extends Bundle {
   val src2_ren = Output(Bool())
   val is_lui = Output(Bool())
   val fusel = FuType()
+}
+class ExceptionInfo extends Bundle{
+  val exception = Vec(EXC_WID, Bool())
+  val interrupt = Vec(INT_WID, Bool())
+  val tval      = Vec(EXC_WID, UInt(XLEN.W))
 }
 
 class SrcReadSignal extends Bundle {

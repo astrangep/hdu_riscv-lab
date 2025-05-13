@@ -164,14 +164,24 @@ object RV64CsrInstr extends HasInstrType {
   def CSRRC  = BitPat("b????????????_?????_011_?????_1110011")  
   def CSRRWI = BitPat("b????????????_?????_101_?????_1110011")  
   def CSRRSI = BitPat("b????????????_?????_110_?????_1110011")  
-  def CSRRCI = BitPat("b????????????_?????_111_?????_1110011")  
+  def CSRRCI = BitPat("b????????????_?????_111_?????_1110011") 
+  def ECALL  = BitPat("b000000000000_00000_000_00000_1110011")
+  def EBREAK = BitPat("b000000000001_00000_000_00000_1110011")
+  def FENCE  = BitPat("b0000_????_????_00000_000_00000_0001111")
+  def MRET   = BitPat("b001100000010_00000_000_00000_1110011")
+  def WFI    = BitPat("b000100000101_00000_000_00000_1110011") 
   val table = Array(
     CSRRW  -> List(InstrI, FuType.csr, CSROpType.write),
     CSRRS  -> List(InstrI, FuType.csr, CSROpType.set),
     CSRRC  -> List(InstrI, FuType.csr, CSROpType.clear),
     CSRRWI -> List(InstrI, FuType.csr, CSROpType.writei),
     CSRRSI -> List(InstrI, FuType.csr, CSROpType.seti),
-    CSRRCI -> List(InstrI, FuType.csr, CSROpType.cleari)
+    CSRRCI -> List(InstrI, FuType.csr, CSROpType.cleari),
+    ECALL  -> List(InstrS, FuType.csr, CSROpType.ecall),
+    EBREAK -> List(InstrS, FuType.csr, CSROpType.ebreak),
+    FENCE  -> List(InstrS, FuType.alu, ALUOpType.add),
+    MRET   -> List(InstrS, FuType.csr, CSROpType.mret),
+    WFI    -> List(InstrS, FuType.alu, ALUOpType.add)
   )
 }
 object RVIInstr extends CoreParameter {
