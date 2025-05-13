@@ -28,7 +28,7 @@ class Core extends Module {
   val ctrlunit       = Module(new CtrlUnit()).io
 
   // 取指单元
-  fetchUnit.branch := executeUnit.branch
+  fetchUnit.flush := executeUnit.flush
   fetchUnit.target := executeUnit.target
   fetchUnit.instSram <> io.instSram
   fetchUnit.decodeStage <> decodeStage.fetchUnit
@@ -60,7 +60,7 @@ class Core extends Module {
   //ctrl
   decodeUnit.executeStage.data.info <> ctrlunit.decodeUnit_info
   executeUnit.memoryStage.data.info <> ctrlunit.executeUnit_info
-  executeUnit.branch <> ctrlunit.branch
+  executeUnit.flush <> ctrlunit.flush
   memoryUnit.writeBackStage.data.info <> ctrlunit.memoryUnit_info
   writeBackUnit.writeBackUnit_info <> ctrlunit.writeBackUnit_info
 

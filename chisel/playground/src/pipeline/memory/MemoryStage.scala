@@ -11,6 +11,7 @@ class ExeMemData extends Bundle {
   val info     = new Info()
   val rd_info  = new RdInfo()
   val src_info = new SrcInfo()
+  val has_exc  = Bool()
 }
 
 class ExecuteUnitMemoryUnit extends Bundle {

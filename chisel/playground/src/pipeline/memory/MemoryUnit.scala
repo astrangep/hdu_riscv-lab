@@ -17,6 +17,8 @@ class MemoryUnit extends Module {
   lsu_mem.info     := io.memoryStage.data.info
   lsu_mem.rdata := io.rdata
   lsu_mem.src_info := io.memoryStage.data.src_info
+  
+  io.writeBackStage.data.has_exc                   := io.memoryStage.data.has_exc
   io.writeBackStage.data.pc                        := io.memoryStage.data.pc
   io.writeBackStage.data.info                      := lsu_mem.info
   io.writeBackStage.data.rd_info.wdata             := Mux(lsu_mem.info.fusel === FuType.lsu, lsu_mem.result, io.memoryStage.data.rd_info.wdata)

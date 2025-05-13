@@ -20,7 +20,7 @@ class WriteBackUnit extends Module {
   io.debug.rf_wnum := io.writeBackStage.data.info.reg_waddr
   io.debug.commit := io.writeBackStage.data.info.valid 
   //寄存器接口
-  io.regfile.wen := io.writeBackStage.data.info.valid & io.writeBackStage.data.info.reg_wen
+  io.regfile.wen := io.writeBackStage.data.info.valid & io.writeBackStage.data.info.reg_wen && !io.writeBackStage.data.has_exc
   io.regfile.waddr := io.writeBackStage.data.info.reg_waddr
   io.regfile.wdata := io.writeBackStage.data.rd_info.wdata
   //控制单元接口

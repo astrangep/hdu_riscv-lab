@@ -14,6 +14,9 @@ class Csr extends Module with HasExceptionNO {
     val pc = Input(UInt(XLEN.W))
     val interrupt  = Output(new InterruptInfo())
     val mode = Output(UInt(2.W))
+    val target = Output(UInt(XLEN.W))
+    val flush = Output(Bool())
+    val has_exc = Output(Bool())
   })
 
   val CSR_ADDRS = Map(
@@ -107,7 +110,7 @@ class Csr extends Module with HasExceptionNO {
   )
   csrRegs(CSR_ADDRS("CYCLE")).reg := csrRegs(CSR_ADDRS("CYCLE")).reg + 1.U
   val mode = RegInit(Priv.m)
-
+  val is_mret = io.info.fusel === FuType.csr && io.info.op === CSROpType.mret
   val csr_addr = io.info.inst(31, 20)
   val rs1_data = io.src_info.src1_data
   val zimm = ZeroExtend(io.info.inst(19,15), 64)
@@ -147,10 +150,69 @@ class Csr extends Module with HasExceptionNO {
   val is_interrupt = io.exc_info.interrupt.asUInt.orR
   val has_exc = is_exception | is_interrupt
   when(has_exc){
-      val interruptNo = PriorityMux(IntPriority.map(i => (io.exc_info.interrupt(i), i.U)))
+      val interruptNO = PriorityMux(IntPriority.map(i => (io.exc_info.interrupt(i), i.U)))
       val exceptionNO = PriorityMux(ExcPriority.map(e => (io.exc_info.exception(e), e.U)))
-      val causeNo = Mux(is_interrupt, interruptNo, exceptionNO)
-      
+      val causeNO = Mux(is_interrupt, interruptNO, exceptionNO)
+      csrRegs(CSR_ADDRS("MTVAL")).reg := Mux(is_interrupt, 0.U, causeNO)
+      csrRegs(CSR_ADDRS("MCAUSE")).reg := Mux(is_interrupt, causeNO | (1 << (XLEN-1)).U, causeNO)
+      csrRegs(CSR_ADDRS("MEPC")).reg := io.pc
+      val legal_mode = mode === Priv.m | mode === Priv.u
+      val mstatus = csrRegs(CSR_ADDRS("MSTATUS")).reg
+      csrRegs(CSR_ADDRS("MSTATUS")).reg := Cat(
+      mstatus(XLEN-1, 13),
+      Mux(legal_mode, mode, mstatus(12,11)),                            // MPP
+      mstatus(10, 8),
+      mstatus(3),                        // MPIE = MIE
+      mstatus(6,4),                             
+      0.U,                               // MIE = 0
+      mstatus(2,0)
+      )
+      mode := Priv.m
+      io.flush := true.B
+      val mtvec = csrRegs(CSR_ADDRS("MTVEC")).reg
+      io.target := (mtvec(XLEN-1, 2) << 2) + Mux(mtvec(0) && is_interrupt, causeNO << 2, 0.U)
   }
+  .elsewhen(is_mret) {
+    val mstatus = csrRegs(CSR_ADDRS("MSTATUS")).reg
+    csrRegs(CSR_ADDRS("MSTATUS")).reg := Cat(
+      mstatus(XLEN-1, 18),
+      mstatus(12,11) === Priv.m,         // MPriv
+      mstatus(16,13),
+      Priv.u,                            // MPP = U
+      mstatus(10, 8),
+      1.U,                               // MPIE = 1
+      mstatus(6,4),
+      mstatus(7),                        // MIE = MPIE
+      mstatus(2, 0)
+    )
+    mode := mstatus(12, 11)
+    io.flush := true.B              
+    io.target := csrRegs(CSR_ADDRS("MEPC")).reg
+  }
+
+  // 中断检测与生成
+  val mie = csrRegs(CSR_ADDRS("MIE")).reg
+  val mip = WireInit(0.U(XLEN.W))
+  
+  // 更新MIP寄存器
+  mip := Cat(
+    Fill(XLEN-12, 0.U),
+    io.exc_info.interrupt(mei),
+    0.U, io.exc_info.interrupt(mti),
+    0.U, io.exc_info.interrupt(msi),
+    0.U
+  )
+  csrRegs(CSR_ADDRS("MIP")).reg := mip & "h0000000000000888".U
+
+  // 中断响应条件
+  val mstatus = csrRegs(CSR_ADDRS("MSTATUS")).reg
+  def checkInterrupt(irq: Bool, bit: Int): Bool = {
+    irq && mie(bit) && (mode === Priv.m && mstatus(3) || mode < Priv.m)
+  }
+
+  io.interrupt.msi := checkInterrupt(mip(3), 3)
+  io.interrupt.mti := checkInterrupt(mip(7), 7)
+  io.interrupt.mei := checkInterrupt(mip(11), 11)
+  io.has_exc := has_exc
   io.result := default_read
 }

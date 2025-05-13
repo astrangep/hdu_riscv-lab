@@ -10,6 +10,7 @@ class MemWbData extends Bundle {
   val pc      = UInt(XLEN.W)
   val info    = new Info()
   val rd_info = new RdInfo()
+  val has_exc = Bool()
 }
 
 class MemoryUnitWriteBackUnit extends Bundle {

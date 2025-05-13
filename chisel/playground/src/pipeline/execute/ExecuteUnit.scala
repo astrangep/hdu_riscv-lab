@@ -12,10 +12,11 @@ class ExecuteUnit extends Module {
     val executeStage = Input(new DecodeUnitExecuteUnit())
     val memoryStage  = Output(new ExecuteUnitMemoryUnit())
     val dataSram     = new DataSram()
-    val branch       = Output(Bool())
+    val flush       = Output(Bool())
     val target       = Output(UInt(XLEN.W))
     val mode = Output(UInt(2.W))
     val interrupt = Output(new InterruptInfo())
+    val has_exc = Output(Bool())
   })
 
   // 执行阶段完成指令的执行操作
@@ -24,11 +25,12 @@ class ExecuteUnit extends Module {
   fu.data.pc       := io.executeStage.data.pc
   fu.data.info     := io.executeStage.data.info
   fu.data.src_info := io.executeStage.data.src_info
-
+  
+  io.memoryStage.data.has_exc := fu.has_exc
   io.dataSram <> fu.dataSram
   io.mode := fu.mode
   io.interrupt := fu.interrupt
-  io.branch := fu.branch
+  io.flush := fu.flush
   io.target := fu.target
   io.memoryStage.data.pc       := fu.data.pc
   io.memoryStage.data.info     := fu.data.info
