@@ -17,7 +17,7 @@ class DecodeUnit extends Module {
     val memoryUnit_rd_info = Input(new RdInfo())
     val writeBackUnit_rd_info = Input(new RdInfo())
     val mode = Input(UInt(2.W))
-    val interrupt = Input(new InterruptInfo())
+    val interrupt_info = Input(new ExtInterrupt())
     // 输出
     val executeStage = Output(new DecodeUnitExecuteUnit())
   })
@@ -37,7 +37,7 @@ class DecodeUnit extends Module {
   exctrl.is_illegal := decoder.out.inst_illegal
   exctrl.info := info
   exctrl.pc := pc
-  exctrl.interrupt := io.interrupt
+  exctrl.interrupt_info := io.interrupt_info
   exctrl.mode := io.mode
 
   //完成寄存器堆的读取

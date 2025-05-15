@@ -21,7 +21,7 @@ class RdInfo extends Bundle {
   val wdata = UInt(XLEN.W)
 }
 
-class   Info extends Bundle {
+class Info extends Bundle {
   val inst = UInt(XLEN.W)
   val valid      = Bool()
   val src1_raddr = UInt(REG_ADDR_WID.W)

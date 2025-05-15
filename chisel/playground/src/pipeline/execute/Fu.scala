@@ -15,12 +15,12 @@ class Fu extends Module {
       val rd_info  = Output(new RdInfo())
       val exc_info = Input(new ExceptionInfo())
     }
+    val interrupt_info = Input(new ExtInterrupt())
     val dataSram = new DataSram()
     val flush = Output(Bool())
     val target = Output(UInt(XLEN.W))
     val mode = Output(UInt(2.W))
-    val interrupt = Output(new InterruptInfo())
-    val ex = Output(new ExceptionInfo())
+    val interrupt = Output(new ExtInterrupt())
     val has_exc = Output(Bool())
   })
 
@@ -46,6 +46,7 @@ class Fu extends Module {
   bru.pc       := io.data.pc
   bru.exc_info := lsu.ex
 
+  csr.interrupt_info := io.interrupt_info
   csr.exc_info := bru.ex
   csr.info     := io.data.info
   csr.src_info := io.data.src_info

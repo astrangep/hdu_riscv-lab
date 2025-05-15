@@ -150,9 +150,9 @@ object CSROpType{
   def isCSROp(op: UInt) = !op(3)
 }
 object Priv{
-  def u      ="b00".U
-  def s      ="b01".U
-  def h      ="b10".U
-  def m      ="b11".U
+  def u      ="b00".U(2.W)
+  def s      ="b01".U(2.W)
+  def h      ="b10".U(2.W)
+  def m      ="b11".U(2.W)
   def apply  =UInt(2.W)
 }

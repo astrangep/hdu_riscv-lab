@@ -47,7 +47,8 @@ class Core extends Module {
   executeUnit.memoryStage <> memoryStage.executeUnit
   executeUnit.dataSram <> io.dataSram
   executeUnit.mode <> decodeUnit.mode
-  executeUnit.interrupt <> decodeUnit.interrupt
+  executeUnit.interrupt <> decodeUnit.interrupt_info
+  io.interrupt <> executeUnit.interrupt_info
 
   memoryStage.memoryUnit <> memoryUnit.memoryStage
   io.dataSram.rdata <> memoryUnit.rdata

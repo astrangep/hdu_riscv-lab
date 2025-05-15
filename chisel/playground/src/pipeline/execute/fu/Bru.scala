@@ -30,19 +30,21 @@ class Bru extends Module with HasExceptionNO{
         BRUOpType.bltu -> (src1_data < src2_data),
         BRUOpType.bgeu -> (src1_data >= src2_data)
     ))
-    val ex = io.exc_info
+    io.ex.exception := io.exc_info.exception.map(e => e)
+    io.ex.interrupt := io.exc_info.interrupt.map(i => i)
+    io.ex.tval      := io.exc_info.tval.map(t => t)
     val is_branch = isBranch(op)
     val is_jump = isJump(op)
     val branch = io.info.valid && (io.info.fusel === FuType.bru) && ((is_branch && branch_bool)| is_jump)
     val target = Mux(io.info.op === BRUOpType.jalr, (src1_data + src2_data) & (~1.U(XLEN.W)), pc + imm)
     val target_misaligned = target(1, 0) =/= 0.U
-    val has_exc = branch && target_misaligned
+    val exc_before = io.exc_info.exception.asUInt.orR 
+    val has_exc = branch && target_misaligned && !exc_before
     when(has_exc){
-        ex.exception(instAddrMisaligned) := true.B
-        ex.tval := target
+        io.ex.exception(instAddrMisaligned) := true.B
+        io.ex.tval(instAddrMisaligned) := target
     }
     io.result := pc + 4.U
     io.branch := branch
     io.target := target
-    io.ex := ex
 }

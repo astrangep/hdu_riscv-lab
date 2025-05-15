@@ -30,16 +30,19 @@ class Lsu extends Module  with HasExceptionNO {
       "b11".U -> (mem_addr(2,0) =/= 0.U)
     )
   )
-  val ex = io.exc_info
-  val has_exc = false.B
+  io.ex.exception := io.exc_info.exception.map(e => e)
+  io.ex.interrupt := io.exc_info.interrupt.map(i => i)
+  io.ex.tval      := io.exc_info.tval.map(t => t)
+  val has_exc = Wire(Bool())
+  has_exc := false.B
   when(io.info.valid && io.info.fusel === FuType.lsu) {
     when(is_load && addr_misaligned) {
-      ex.exception(loadAddrMisaligned) := true.B
-      ex.tval(loadAddrMisaligned) := mem_addr
+      io.ex.exception(loadAddrMisaligned) := true.B
+      io.ex.tval(loadAddrMisaligned) := mem_addr
       has_exc := true.B
     }.elsewhen(is_store && addr_misaligned) {
-      ex.exception(storeAddrMisaligned) := true.B
-      ex.tval(storeAddrMisaligned) := mem_addr
+      io.ex.exception(storeAddrMisaligned) := true.B
+      io.ex.tval(storeAddrMisaligned) := mem_addr
       has_exc := true.B
     }
   }
@@ -62,6 +65,5 @@ class Lsu extends Module  with HasExceptionNO {
     "b11".U -> src2_data                    
   ))
   io.result := 0.U
-  io.ex := ex
 }
 
