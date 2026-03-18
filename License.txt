@@ -1,0 +1,7 @@
+Copyright (c) 2026 astrangep
+
+This license applies only to the modifications and additional code
+introduced in this repository.
+
+The original source code is the work of the original author 
+and is used with permission.
